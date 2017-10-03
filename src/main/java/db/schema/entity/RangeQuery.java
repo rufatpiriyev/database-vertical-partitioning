@@ -1,6 +1,5 @@
 package db.schema.entity;
 
-import java.util.Map;
 
 /**
  * A query projecting some columns, having a single range filter condition, and optionally selections as well.

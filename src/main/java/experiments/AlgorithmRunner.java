@@ -447,8 +447,8 @@ public class AlgorithmRunner {
     public static void main(String[] args) {
         String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};
         Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
-        //AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
-        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
+        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
+        //AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
         for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
             algos_sel.add(algo);
         }
