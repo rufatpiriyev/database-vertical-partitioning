@@ -36,18 +36,55 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 //        "    int gid = get_global_id(0);"+
 //        "    c[gid] = a[gid] * b[gid];"+
 //        "}";
-    " kernel void sampleKernel(__global const int* A, __global const int* B, __global int* C,  __global const int* m)"
-    + "    {"
-    + "        int id= (int)get_global_id(0);"
-    + "        if( id<m[0] )"
-    + "        {"
-    + "            C[id]=A[id];"
-    + "        }"
-    + "        else"
-    + "        {"
-    + "            C[id]=B[id-m[0]];"
-    + "        }"
-    + "    }";
+ 
+//    " kernel void sampleKernel(__global const int* A, __global const int* B, __global int* C,  __global const int* m)"
+//    + "    {"
+//    + "        int id= (int)get_global_id(0);"
+//    + "        if( id<m[0] )"
+//    + "        {"
+//    + "            C[id]=A[id];"
+//    + "        }"
+//    + "        else"
+//    + "        {"
+//    + "            C[id]=B[id-m[0]];"
+//    + "        }"
+//    + "    }";
+    		
+    " kernel void sampleKernel(__global const int* A, __global const int* B, __global short* C,  __global const int* m, __global const int* n)"
+     + "    {"
+     + "        int id= (int)get_global_id(0);"
+     + "		for (int k=0; k<n; k++){ if (A[id]==B[k]) {C[(id*n)+k]=0;} else {C[(id*n)+k]=1;}"
+     + "		}"
+     + "    }";
+    
+    private static String programSource2 =
+//          "__kernel void "+
+//          "sampleKernel(__global const float *a,"+
+//          "             __global const float *b,"+
+//          "             __global float *c)"+
+//          "{"+
+//          "    int gid = get_global_id(0);"+
+//          "    c[gid] = a[gid] * b[gid];"+
+//          "}";
+   
+//      " kernel void sampleKernel(__global const int* A, __global const int* B, __global int* C,  __global const int* m)"
+//      + "    {"
+//      + "        int id= (int)get_global_id(0);"
+//      + "        if( id<m[0] )"
+//      + "        {"
+//      + "            C[id]=A[id];"
+//      + "        }"
+//      + "        else"
+//      + "        {"
+//      + "            C[id]=B[id-m[0]];"
+//      + "        }"
+//      + "    }";
+      		
+      " kernel void sampleKernel(__global const short* C, __global const short* B, __global const int* m)"
+       + "    {"
+       + "      int id= (int)get_global_id(0);"
+       + "		for (int k=0; kif (A[id]==B[k]) {C[(id*n)+k]=0;} else {C[(id*n)+k]=1;}"
+       + "    }";
     
     
     /*
@@ -188,13 +225,14 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         cl_mem memObjects[] = new cl_mem[4];
         memObjects[0] = clCreateBuffer(context, 
             CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-            Sizeof.cl_int * is.length, srcA, null);
+            Sizeof.cl_int * is.length, srcA, null); //Smallest
         memObjects[1] = clCreateBuffer(context, 
-            CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+            CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, //Biggest
             Sizeof.cl_int * is2.length, srcB, null);
         memObjects[2] = clCreateBuffer(context, 
             CL_MEM_READ_WRITE, 
-            Sizeof.cl_int * is2.length+is.length, null, null);
+            Sizeof.cl_short * is2.length * is.length, null, null);
+        //Whatever memObjects[3] holds, it needs to be the size of a short
         memObjects[3] = clCreateBuffer(context, 
                 CL_MEM_READ_WRITE, 
                 Sizeof.cl_int, sizem, null);
@@ -241,6 +279,11 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         clReleaseProgram(program);
         clReleaseCommandQueue(commandQueue);
         clReleaseContext(context);
+        
+        
+        
+        
+        
         
 		//Here we pass the array to a set (which filters out duplicates)
 		TIntHashSet set = new TIntHashSet();
