@@ -38,6 +38,7 @@ public class AlgorithmRunner {
     protected DreamPartitioner dreamPartitioner;
     protected AutoPart autoPart;
     protected HillClimb hillClimb;
+    protected HillClimbCL hillClimbCL;
     protected HYRISE hyrise;
     protected NavatheAlgorithm navatheAlgo;
     protected O2P o2p;
@@ -355,6 +356,9 @@ public class AlgorithmRunner {
         hillClimb = new HillClimb(config);
         runAlgorithm(hillClimb, tableName);
 
+        hillClimbCL = new HillClimbCL(config);
+        runAlgorithm(hillClimbCL, tableName);
+        
         hyrise = new HYRISE(config);
         runAlgorithm(hyrise, tableName);
 
@@ -447,8 +451,9 @@ public class AlgorithmRunner {
     public static void main(String[] args) {
         String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};
         Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
-        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
+//        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
         //AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
+        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {HILLCLIMBCL};
         for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
             algos_sel.add(algo);
         }
