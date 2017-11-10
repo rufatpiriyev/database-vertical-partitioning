@@ -50,7 +50,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		     + "			output[id] = 1;"
 		     + "			int count = (int) floor(id/(*m));"
 		     + "            for(int i=from[count]; i<to[count]; i++){"
-		     + "			printf(\"Comparing %d and %d, boolean: %d in %d \\n\", bigArray[id%*m], smallArray[i], bigArray[id%*m]==smallArray[i], id);"
+		    // + "			printf(\"Comparing %d and %d, boolean: %d in %d \\n\", bigArray[id%*m], smallArray[i], bigArray[id%*m]==smallArray[i], id);"
 		     + "		    if (bigArray[id%*m]==smallArray[i])output[id] = 0;"
 		     +"			}}"	   	
 		     + "    }";
@@ -96,7 +96,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		}
 		
 		double candCost = getCandCost(cand);
-		System.out.println("Cost: "+candCost);
+		//System.out.println("Cost: "+candCost);
 		double minCost;
 		List<int[][]> candList = new ArrayList<int[][]>();
 		int[][] R;
@@ -314,18 +314,18 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         	toArray[i] = posArray[i] + counts.get(i); 
         }
         
-        System.out.println("Printing Big Array");
+        //System.out.println("Printing Big Array");
         for (int i=0; i<is.length; i++) {
-        	System.out.println(is[i]);
+        	//System.out.println(is[i]);
         }
         
-        System.out.println("Printing Small Array");
+       // System.out.println("Printing Small Array");
         for (int i=0; i<is2.size(); i++) {
         	String temp="";
         	for (int j=0; j<is2.get(i).length; j++) {
             	temp+=" "+is2.get(i)[j];
             }
-        	System.out.println("Pos: "+i+"- "+temp);
+        	//System.out.println("Pos: "+i+"- "+temp);
         }
         String posString="";
         String toString="";
@@ -333,8 +333,8 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         	posString+=" "+posArray[j];
         	toString+=" "+toArray[j];
         }
-        System.out.println("Pos Array- "+posString);
-        System.out.println("To Array- "+toString);
+       // System.out.println("Pos Array- "+posString);
+        //System.out.println("To Array- "+toString);
         
         
         
@@ -349,9 +349,9 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         	}
         }
         
-        System.out.println("Printing newis2");
+       // System.out.println("Printing newis2");
         for (int i=0; i<newis2.length; i++) {
-        	System.out.println(newis2[i]);
+        	//System.out.println(newis2[i]);
         }
         
         Pointer srcA = Pointer.to(is);
@@ -504,9 +504,9 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         
         
         
-       System.out.println("Printing First Comparison");
+     //  System.out.println("Printing First Comparison");
        for (int i=0; i<is.length*counts.size(); i++) {
-       		System.out.println(dstArray[i]);
+       		//System.out.println(dstArray[i]);
        }
        return dstArray;
 	}
@@ -514,36 +514,31 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 	public static int[] doMerge(int[] is, List<int[]> is2) {
 		
 		int prefixResults [] = new int [is.length*is2.size()];
-		System.out.println("Doing the comparison");
+		//System.out.println("Doing the comparison");
 		prefixResults = doComparison(is, is2);
 	
-		System.out.println("Printing prefix results");
+		//System.out.println("Printing prefix results");
 		for (int i=0; i<prefixResults.length; i++) {
-			System.out.println(prefixResults[i]);
+			//System.out.println(prefixResults[i]);
 		}
 		
-		System.out.println("Doing the prefix sum");
-		
-		
+		//working here
 		int smallPosList [] = new int [is.length*is2.size()];
 		int counter = 0;
-		System.out.println("posList");
 		for (int i=0; i<is.length*is2.size(); i++) {
 			smallPosList[i]=counter;
 			if (prefixResults[i]==1) {
 				counter++;
 			}
-			System.out.println(smallPosList[i]);
 		}
-		
-		int resultSize= smallPosList[smallPosList.length-1]+1+is2.stream().map(it->it.length).reduce(0, Integer::sum);
+		//int resultSize= smallPosList[smallPosList.length-1]+1+is2.stream().map(it->it.length).reduce(0, Integer::sum);
 		int posListSize= (is.length*is2.size())+is2.stream().map(it->it.length).reduce(0, Integer::sum);
 		int posList [] = new int [posListSize];
 		int bitmask [] = new int [posListSize];
 		int is2Pos= 0;
 		int isPos= 0;
 		int outputCounter=0;
-		for (int[] item: is2) {
+		for (int[] item: is2) {			
 			for (int i=0; i<item.length; i++) {
 				bitmask[outputCounter]=-1;
 				posList[outputCounter]=is2Pos;
@@ -551,15 +546,33 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 				outputCounter++;
 			}
 			for (int i=0; i<is.length; i++) {
-				posList[outputCounter]=smallPosList[isPos];
+				posList[outputCounter]=is2Pos;
 				bitmask[outputCounter]=prefixResults[isPos];
+			
+				if (prefixResults[isPos]==1) {
+						is2Pos++;
+				}
 				outputCounter++;
+				isPos++;
 			}
-
 		}
-		System.out.println(outputCounter);
-		System.out.println(posListSize);
-		System.out.println(resultSize);
+		System.out.println("Bitmask");
+		for (int i=0; i<bitmask.length; i++) {
+		System.out.println(bitmask[i]);
+		}
+				
+		System.out.println("posList");
+		for (int i=0; i<posList.length; i++) {
+		System.out.println(posList[i]);
+		}
+				
+				
+		//System.out.println(outputCounter);
+		//System.out.println(posListSize);
+		//System.out.println(resultSize);
+				
+				
+				
 		
 		int[] c= new int[is.length+is2.size()];
 		System.arraycopy(is, 0, c, 0, is.length);
@@ -645,14 +658,15 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 //		ps.remove(new ArrayList<T>()); // remove the empty set
 //		return ps;
 //	}
-	public static void main (String[] args) {
-		int[] a = {0, 1, 2};
+	public static void main(String[] args) {
+		int[] a = {0, 1, 3,6};
 		int[] b = {0, 3, 4, 5};
 		int[] c = {0, 7, 8, 9, 10};
 		List<int[]> example = new ArrayList<>();
 		example.add(b);
 		example.add(c);
 		
+	
 		for (int k=0; k<1; k++) {
 		try {
 			Thread.sleep(5000);
