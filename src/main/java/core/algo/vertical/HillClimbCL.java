@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jocl.*;
 
@@ -34,10 +35,24 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 				
 			 " kernel void comparer(__global const int* bigArray, __global const int* smallArray, __global int* output,  __global const int* m, __global const int* n)"
 		     + "    {"
-		     + "        int id= (int)get_global_id(0);"
+		     + "        int id= (int)get_global_id(0); "		     
 		     +"			if (id<(int)(*m)){output[id] = 1;"
 		     + "		for (int k=0; k<(int)(*n); k++){ if (bigArray[id]==smallArray[k]) {output[id] = 0;}}"
 		     +"			}"	   
+		     + "    }";
+	private static String programSource_largeScale =      		
+			   
+	            			
+			 " kernel void comparer_largeScale(__global const int* bigArray, __global const int* smallArray, __global int* output,  __global const int* m, __global const int* fromsize, __global const int* from, __global const int* to,  __global const int* n)"
+		     + "    {"
+		     + "        int id= (int)get_global_id(0); "		     
+		     +"			if (id<(int)(*n)){"
+		     + "			output[id] = 1;"
+		     + "			int count = (int) floor(id/(*m));"
+		     + "            for(int i=from[count]; i<to[count]; i++){"
+		     + "			printf(\"Comparing %d and %d, boolean: %d in %d \\n\", bigArray[id%*m], smallArray[i], bigArray[id%*m]==smallArray[i], id);"
+		     + "		    if (bigArray[id%*m]==smallArray[i])output[id] = 0;"
+		     +"			}}"	   	
 		     + "    }";
 	
 	private static String programSource2 =      		
@@ -79,7 +94,9 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		for(int i = 0; i < w.attributeCount; i++) {
 			cand[i][0] = i;
 		}
+		
 		double candCost = getCandCost(cand);
+		System.out.println("Cost: "+candCost);
 		double minCost;
 		List<int[][]> candList = new ArrayList<int[][]>();
 		int[][] R;
@@ -90,12 +107,23 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 			minCost = candCost;
 			candList.clear();
 			for (int i = 0; i < R.length; i++) {
-				for (int j = i + 1; j < R.length; j++) {
+				//Here we form a List of R.length int[], we store the R[js] in there...
+				//Then we change our doMerge so that it works on that and returns a list of candidates...
+				List<int[]> tempCandidateList = new ArrayList<>();
+				List<int[]> partialResults = new ArrayList<>();
+				for (int j = i + 1; j < R.length; j++) { 
+					tempCandidateList.add(R[j]);
+					//What I need to fill here is R[j]
+				}
+				partialResults = doMerge(R[i], tempCandidateList);//We already parallelized the candidate generation.
+				
+				int counter = 0;
+				for (int j = i + 1; j < R.length; j++) {//We still need to double-check this, to see if we are missing out some parallelization
 					cand = new int[R.length-1][];
-					s = doMerge(R[i], R[j]);//
 					for(int k = 0; k < R.length; k++) {
 						if(k == i) {
-							cand[k] = s;
+							cand[k] = partialResults.get(counter);
+							counter++;
 						} else if(k < j) {
 							cand[k] = R[k];
 						} else if(k > j) {
@@ -105,8 +133,9 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 					candList.add(cand);
 				}
 			}
+			
 			if(!candList.isEmpty()) {
-				cand = getLowerCostCand(candList);
+				cand = getLowerCostCand(candList);//This we could parallelize, but we believe that this list will be small.
 				candCost = getCandCost(cand);
 			}
 		} while (candCost < minCost);
@@ -259,25 +288,90 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         clReleaseProgram(program);
         clReleaseCommandQueue(commandQueue);
         clReleaseContext(context);
-        
+        Runtime r = Runtime.getRuntime();
+        r.gc();
+
         return dstArray;
 	}
 	
-	private static int [] doComparison(int[] is, int[] is2) {
+	private static int [] doComparison(int[] is, List<int[]> is2) {
 		//Here we concatenate them into a single array, in OpenCL
-        int dstArray[] = new int[is.length];
+        int dstArray[] = new int[is.length * is2.size()];
+        List<Integer> counts = is2.stream().map(it->it.length).collect(Collectors.toList());
+        
+        Integer size_is2= counts.stream().reduce(0, Integer::sum);
+        
+        int posArray[] = new int[counts.size()];
+        int toArray[] = new int[counts.size()];
+        
+        toArray[0] = counts.get(0);
+        
+        int counter = 0;
+        posArray[0] = 0;
+        for (int i = 1; i<counts.size(); i++) {
+        	counter+=counts.get(i-1);
+        	posArray[i] = counter;
+        	toArray[i] = posArray[i] + counts.get(i); 
+        }
+        
+        System.out.println("Printing Big Array");
+        for (int i=0; i<is.length; i++) {
+        	System.out.println(is[i]);
+        }
+        
+        System.out.println("Printing Small Array");
+        for (int i=0; i<is2.size(); i++) {
+        	String temp="";
+        	for (int j=0; j<is2.get(i).length; j++) {
+            	temp+=" "+is2.get(i)[j];
+            }
+        	System.out.println("Pos: "+i+"- "+temp);
+        }
+        String posString="";
+        String toString="";
+        for (int j = 0; j<counts.size(); j++) {
+        	posString+=" "+posArray[j];
+        	toString+=" "+toArray[j];
+        }
+        System.out.println("Pos Array- "+posString);
+        System.out.println("To Array- "+toString);
+        
+        
+        
+        
+        //counts.stream().mapToInt(i->i).toArray();       
+        int newis2 [] = new int[size_is2];
+        int posToAdd=0;
+        for (int[] t: is2) {
+        	for (int item: t) {
+        		newis2[posToAdd]= item;
+        		posToAdd++;
+        	}
+        }
+        
+        System.out.println("Printing newis2");
+        for (int i=0; i<newis2.length; i++) {
+        	System.out.println(newis2[i]);
+        }
         
         Pointer srcA = Pointer.to(is);
-        Pointer srcB = Pointer.to(is2);
-        Pointer dst = Pointer.to(dstArray);
         int[] size_m = new int [1];
         size_m[0]= is.length; 
         Pointer sizem = Pointer.to(size_m);
+        
         int[] size_n = new int [1];
-        size_n[0]=is2.length; 
+        size_n[0]= newis2.length; 
         Pointer sizen = Pointer.to(size_n);
-
-
+        
+        Pointer srcB = Pointer.to(newis2);
+        Pointer fromArray = Pointer.to(posArray);
+        int[] totalIs2 = new int [1];
+        totalIs2[0]= counts.size(); 
+        Pointer totaln = Pointer.to(totalIs2);
+        Pointer toPositionArray = Pointer.to(toArray);
+        
+        Pointer dst = Pointer.to(dstArray);
+        
         // The platform, device type and device number
         // that will be used
         final int platformIndex = 0;
@@ -324,33 +418,45 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
             clCreateCommandQueue(context, device, 0, null);
 
         // Allocate the memory objects for the input- and output data
-        cl_mem memObjects[] = new cl_mem[5];
+        cl_mem memObjects[] = new cl_mem[8];
         memObjects[0] = clCreateBuffer(context, 
             CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
             Sizeof.cl_int * is.length, srcA, null); //Smallest
+        
         memObjects[1] = clCreateBuffer(context, 
             CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, //Biggest
-            Sizeof.cl_int * is2.length, srcB, null);
+            Sizeof.cl_int * newis2.length, srcB, null);
         memObjects[2] = clCreateBuffer(context, 
             CL_MEM_READ_WRITE, 
-            Sizeof.cl_int * is.length, null, null);
+            Sizeof.cl_int * is.length * (int)counts.size(), null, null);
         memObjects[3] = clCreateBuffer(context, 
         		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,  
                 Sizeof.cl_int, sizem, null);
+        
         memObjects[4] = clCreateBuffer(context, 
         		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,  
-                Sizeof.cl_int, sizen, null);
+                Sizeof.cl_int, totaln, null);
 
+        memObjects[5] = clCreateBuffer(context, 
+        		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,  
+                Sizeof.cl_int*(int)counts.size(), fromArray, null);
+        memObjects[6] = clCreateBuffer(context, 
+        		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,  
+                Sizeof.cl_int*(int)counts.size(), toPositionArray, null);
+        memObjects[7] = clCreateBuffer(context, 
+        		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,  
+                Sizeof.cl_int, sizen, null);
+        
         // Create the program from the source code
         program = clCreateProgramWithSource(context,
-            1, new String[]{ programSource }, null, null);
+            1, new String[]{ programSource_largeScale }, null, null);
         
         // Build the program
         clBuildProgram(program, 0, null, null, null, null);
         
         
         // Create the kernel
-        cl_kernel kernel = clCreateKernel(program, "comparer", null);
+        cl_kernel kernel = clCreateKernel(program, "comparer_largeScale", null);
         
         // Set the arguments for the kernel
         clSetKernelArg(kernel, 0, 
@@ -361,11 +467,17 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
             Sizeof.cl_mem, Pointer.to(memObjects[2]));
         clSetKernelArg(kernel, 3, 
                 Sizeof.cl_mem, Pointer.to(memObjects[3]));
-        clSetKernelArg(kernel, 4, 
+        clSetKernelArg(kernel, 4,
                 Sizeof.cl_mem, Pointer.to(memObjects[4]));
+        clSetKernelArg(kernel, 5,
+                Sizeof.cl_mem, Pointer.to(memObjects[5]));
+        clSetKernelArg(kernel, 6,
+                Sizeof.cl_mem, Pointer.to(memObjects[6]));
+        clSetKernelArg(kernel, 7,
+                Sizeof.cl_mem, Pointer.to(memObjects[7]));
         
         // Set the work-item dimensions
-        long global_work_size[] = new long[]{is.length};
+        long global_work_size[] = new long[]{counts.size()*is.length};
         long local_work_size[] = new long[]{1};
         
         // Execute the kernel
@@ -374,7 +486,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         
         // Read the output data
         clEnqueueReadBuffer(commandQueue, memObjects[2], CL_TRUE, 0,
-            is.length* Sizeof.cl_int, dst, 0, null, null);
+            is.length* (int)counts.size()*Sizeof.cl_int, dst, 0, null, null);
         
         // Release kernel, program, and memory objects
         clReleaseMemObject(memObjects[0]);
@@ -382,62 +494,80 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         clReleaseMemObject(memObjects[2]);
         clReleaseMemObject(memObjects[3]);
         clReleaseMemObject(memObjects[4]);
+        clReleaseMemObject(memObjects[5]);
+        clReleaseMemObject(memObjects[6]);
+        clReleaseMemObject(memObjects[7]);
         clReleaseKernel(kernel);
         clReleaseProgram(program);
         clReleaseCommandQueue(commandQueue);
         clReleaseContext(context);
         
-//        System.out.println("Printing Big Array");
-//        for (int i=0; i<is.length; i++) {
-//        	System.out.println(is[i]);
-//        }
-//        
-//        System.out.println("Printing Small Array");
-//        for (int i=0; i<is2.length; i++) {
-//        	System.out.println(is2[i]);
-//        }
-//        
-//        System.out.println("Printing First Comparison");
-//        for (int i=0; i<is.length; i++) {
-//        	System.out.println(dstArray[i]);
-//        }
-        return dstArray;
+        
+        
+       System.out.println("Printing First Comparison");
+       for (int i=0; i<is.length*counts.size(); i++) {
+       		System.out.println(dstArray[i]);
+       }
+       return dstArray;
 	}
 	
-	public static int[] doMerge(int[] is, int[] is2) {
-		int prefixResults [] = new int [is.length];
+	public static int[] doMerge(int[] is, List<int[]> is2) {
+		
+		int prefixResults [] = new int [is.length*is2.size()];
 		System.out.println("Doing the comparison");
 		prefixResults = doComparison(is, is2);
+	
+		System.out.println("Printing prefix results");
+		for (int i=0; i<prefixResults.length; i++) {
+			System.out.println(prefixResults[i]);
+		}
 		
 		System.out.println("Doing the prefix sum");
-		int bitMask [] = new int [is.length+is2.length];
-		//Here we fill the bitmask
-		//System.out.println("bitmask");
-		for( int k= 0; k<is.length+is2.length; k++) {
-			if (k < is.length)
-				bitMask [k] = prefixResults[k];
-			else 
-				bitMask [k] = 1;
-			//System.out.println(bitMask[k]);
-		}
 		
-		int posList [] = new int [is.length+is2.length];
+		
+		int smallPosList [] = new int [is.length*is2.size()];
 		int counter = 0;
-		//System.out.println("posList");
-		for (int i=0; i<is.length+is2.length; i++) {
-			posList[i]=counter;
-			if (bitMask[i]==1) {
+		System.out.println("posList");
+		for (int i=0; i<is.length*is2.size(); i++) {
+			smallPosList[i]=counter;
+			if (prefixResults[i]==1) {
 				counter++;
-							}
-		//	System.out.println(posList[i]);
+			}
+			System.out.println(smallPosList[i]);
 		}
 		
-		int[] c= new int[is.length+is2.length];
-		System.arraycopy(is, 0, c, 0, is.length);
-		System.arraycopy(is2, 0, c, is.length, is2.length);
+		int resultSize= smallPosList[smallPosList.length-1]+1+is2.stream().map(it->it.length).reduce(0, Integer::sum);
+		int posListSize= (is.length*is2.size())+is2.stream().map(it->it.length).reduce(0, Integer::sum);
+		int posList [] = new int [posListSize];
+		int bitmask [] = new int [posListSize];
+		int is2Pos= 0;
+		int isPos= 0;
+		int outputCounter=0;
+		for (int[] item: is2) {
+			for (int i=0; i<item.length; i++) {
+				bitmask[outputCounter]=-1;
+				posList[outputCounter]=is2Pos;
+				is2Pos++;
+				outputCounter++;
+			}
+			for (int i=0; i<is.length; i++) {
+				posList[outputCounter]=smallPosList[isPos];
+				bitmask[outputCounter]=prefixResults[isPos];
+				outputCounter++;
+			}
+
+		}
+		System.out.println(outputCounter);
+		System.out.println(posListSize);
+		System.out.println(resultSize);
 		
-		System.out.println("Writing back the results");
-		return getResult(counter, c, bitMask, posList);
+		int[] c= new int[is.length+is2.size()];
+		System.arraycopy(is, 0, c, 0, is.length);
+		System.arraycopy(is2, 0, c, is.length, is2.size());
+		
+		//System.out.println("Writing back the results");
+		//System.out.println("Writing back the results" +getResult(counter, c, bitMask, posList));
+		return getResult(counter, c, prefixResults, posList);
 
 	}
 
@@ -516,13 +646,27 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 //		return ps;
 //	}
 	public static void main (String[] args) {
-//		int[] a = {1, 2, 3, 4, 5, 7, 9, 28, 0};
-//		int[] b = {0, 2, 4, 11, 12, 10, 5, 6};
-//		int [] result = doMergeCL(a, b);
-//		String res = "";
-//		for (int i=0; i<result.length; i++) {
-//			res+=result[i]+", ";
-//		}
-//		System.out.println("Result: "+res);
+		int[] a = {0, 1, 2};
+		int[] b = {0, 3, 4, 5};
+		int[] c = {0, 7, 8, 9, 10};
+		List<int[]> example = new ArrayList<>();
+		example.add(b);
+		example.add(c);
+		
+		for (int k=0; k<1; k++) {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int [] result = doMerge(a, example);
+		
+		String res = "";
+		for (int i=0; i<result.length; i++) {
+			res+=result[i]+", ";
+		}
+		System.out.println("Result: "+res);
+		}
 	}
 }
