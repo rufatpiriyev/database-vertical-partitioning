@@ -511,19 +511,19 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
        return dstArray;
 	}
 	
-	public static int[] doMerge(int[] is, List<int[]> is2) {
+	@SuppressWarnings("null")
+	public static List<int[]> doMerge(int[] is, List<int[]> is2) {
 		
 		int prefixResults [] = new int [is.length*is2.size()];
-		//System.out.println("Doing the comparison");
-		prefixResults = doComparison(is, is2);
+		prefixResults = doComparison(is, is2); //Prefix results is an array of 0s and 1s (which is the bitmask of is, repeated is2.size() times). 
 	
-		//System.out.println("Printing prefix results");
-		for (int i=0; i<prefixResults.length; i++) {
-			//System.out.println(prefixResults[i]);
-		}
+//		System.out.println("Printing prefix results");
+//		for (int i=0; i<prefixResults.length; i++) {
+//			System.out.println(prefixResults[i]);
+//		}
 		
 		//working here
-		int smallPosList [] = new int [is.length*is2.size()];
+		int smallPosList [] = new int [is.length*is2.size()]; //Prefix sum over prefix results (also the position list for using is)
 		int counter = 0;
 		for (int i=0; i<is.length*is2.size(); i++) {
 			smallPosList[i]=counter;
@@ -531,14 +531,18 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 				counter++;
 			}
 		}
-		//int resultSize= smallPosList[smallPosList.length-1]+1+is2.stream().map(it->it.length).reduce(0, Integer::sum);
-		int posListSize= (is.length*is2.size())+is2.stream().map(it->it.length).reduce(0, Integer::sum);
+
+		int resultSize= smallPosList[smallPosList.length-1]+1+is2.stream().map(it->it.length).reduce(0, Integer::sum);//This is the size of the output
+		int posListSize= (is.length*is2.size())+is2.stream().map(it->it.length).reduce(0, Integer::sum);//This is the size of the combined bitmasks
 		int posList [] = new int [posListSize];
 		int bitmask [] = new int [posListSize];
+
 		int is2Pos= 0;
 		int isPos= 0;
+		int[] outputarray= new int[resultSize];	
 		int outputCounter=0;
-		for (int[] item: is2) {			
+		
+		for ( int [] item: is2) {	
 			for (int i=0; i<item.length; i++) {
 				bitmask[outputCounter]=-1;
 				posList[outputCounter]=is2Pos;
@@ -548,7 +552,6 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 			for (int i=0; i<is.length; i++) {
 				posList[outputCounter]=is2Pos;
 				bitmask[outputCounter]=prefixResults[isPos];
-			
 				if (prefixResults[isPos]==1) {
 						is2Pos++;
 				}
@@ -556,32 +559,70 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 				isPos++;
 			}
 		}
+		
+		int isid = 0 ;
+		
+		int is2listPos = 0;
+		int is2internalArrayPos=0;
+		List<int[]> results = new ArrayList<>();
+		int startPos=0;
+		for(int i=0; i<bitmask.length; i++ ) {
+			if (bitmask[i] == -1) {				
+				outputarray[posList[i]] =  is2.get(is2listPos)[is2internalArrayPos];
+	           // System.out.println("OUTPUT OF BITMASK -1 IS :"+outputarray[posList[i]]+"\n");
+				is2internalArrayPos++;
+
+	         }
+			else {
+				 if (is2internalArrayPos>0) {
+					 is2internalArrayPos= 0;
+					 is2listPos++;
+				 }
+				 if (bitmask[i] == 1 ) {
+					 outputarray[posList[i]] = is[isid];		 
+					// System.out.println("OUTPUT OF BITMASK 1 IS :"+outputarray[posList[i]]+"\n");
+				 }
+				 isid++;
+				 if (isid>=is.length) {
+                    isid=0;
+                    int[] newArray = new int[posList[i]-startPos+1];
+                    for (int j= 0; j<newArray.length; j++) {
+                    	System.out.println("start "+startPos);
+                    	System.out.println("j "+j);
+                    	newArray[j]=outputarray[startPos+j];
+                    }
+                    results.add(newArray);
+                    startPos=posList[i]+1;
+                 }
+			}
+               
+       }//System.out.println("bitmask position:"+i+"----"+"0 ENTERED");
+            	
+	/*	
 		System.out.println("Bitmask");
 		for (int i=0; i<bitmask.length; i++) {
 		System.out.println(bitmask[i]);
 		}
-				
-		System.out.println("posList");
-		for (int i=0; i<posList.length; i++) {
-		System.out.println(posList[i]);
-		}
-				
-				
-		//System.out.println(outputCounter);
-		//System.out.println(posListSize);
-		//System.out.println(resultSize);
-				
-				
-				
 		
-		int[] c= new int[is.length+is2.size()];
-		System.arraycopy(is, 0, c, 0, is.length);
-		System.arraycopy(is2, 0, c, is.length, is2.size());
-		
+		System.arraycopy(is, 0,outputarray, 0, is.length);
+		System.arraycopy(is2, 0,outputarray, is.length, is2.size());
+	*/	
 		//System.out.println("Writing back the results");
 		//System.out.println("Writing back the results" +getResult(counter, c, bitMask, posList));
-		return getResult(counter, c, prefixResults, posList);
+		for (int[] res: results){
+			String values="";
+			for (int l=0; l<res.length; l++) {
+				values+=res[l]+" ";
+			}
+			System.out.println("output :"+values);
+			}
+		return results; //getResult(counter, outputarray, prefixResults, posList);
 
+	}
+
+	private static void If(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private double getCandCost(int[][] cand) {
@@ -658,29 +699,30 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 //		ps.remove(new ArrayList<T>()); // remove the empty set
 //		return ps;
 //	}
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		int[] a = {0, 1, 3,6};
 		int[] b = {0, 3, 4, 5};
 		int[] c = {0, 7, 8, 9, 10};
 		List<int[]> example = new ArrayList<>();
 		example.add(b);
 		example.add(c);
-		
+		   
 	
 		for (int k=0; k<1; k++) {
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//		try {
+//			Thread.sleep(5000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		List<int[]> result = doMerge(a, example);
+		for (int[] res: result){
+			String values="";
+			for (int l=0; l<res.length; l++) {
+				values+=res[l]+" ";
+			}
+			System.out.println(values);
+			}
 		}
-		int [] result = doMerge(a, example);
-		
-		String res = "";
-		for (int i=0; i<result.length; i++) {
-			res+=result[i]+", ";
-		}
-		System.out.println("Result: "+res);
-		}
-	}
+	}*/
 }
