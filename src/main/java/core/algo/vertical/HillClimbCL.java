@@ -505,9 +505,9 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         
         
      //  System.out.println("Printing First Comparison");
-       for (int i=0; i<is.length*counts.size(); i++) {
+      // for (int i=0; i<is.length*counts.size(); i++) {
        		//System.out.println(dstArray[i]);
-       }
+       //}
        return dstArray;
 	}
 	
@@ -561,7 +561,6 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		}
 		
 		int isid = 0 ;
-		
 		int is2listPos = 0;
 		int is2internalArrayPos=0;
 		List<int[]> results = new ArrayList<>();
@@ -571,7 +570,6 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 				outputarray[posList[i]] =  is2.get(is2listPos)[is2internalArrayPos];
 	           // System.out.println("OUTPUT OF BITMASK -1 IS :"+outputarray[posList[i]]+"\n");
 				is2internalArrayPos++;
-
 	         }
 			else {
 				 if (is2internalArrayPos>0) {
@@ -587,8 +585,8 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
                     isid=0;
                     int[] newArray = new int[posList[i]-startPos+1];
                     for (int j= 0; j<newArray.length; j++) {
-                    	System.out.println("start "+startPos);
-                    	System.out.println("j "+j);
+                    	//System.out.println("start "+startPos);
+                    	//System.out.println("j "+j);
                     	newArray[j]=outputarray[startPos+j];
                     }
                     results.add(newArray);
@@ -596,8 +594,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
                  }
 			}
                
-       }//System.out.println("bitmask position:"+i+"----"+"0 ENTERED");
-            	
+       }
 	/*	
 		System.out.println("Bitmask");
 		for (int i=0; i<bitmask.length; i++) {
@@ -607,36 +604,26 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		System.arraycopy(is, 0,outputarray, 0, is.length);
 		System.arraycopy(is2, 0,outputarray, is.length, is2.size());
 	*/	
-		//System.out.println("Writing back the results");
-		//System.out.println("Writing back the results" +getResult(counter, c, bitMask, posList));
 		for (int[] res: results){
 			String values="";
 			for (int l=0; l<res.length; l++) {
 				values+=res[l]+" ";
 			}
-			System.out.println("output :"+values);
+			//System.out.println("output :"+values);
 			}
-		return results; //getResult(counter, outputarray, prefixResults, posList);
-
+		return results; 
+		//getResult(counter, outputarray, prefixResults, posList);
 	}
-
-	private static void If(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	private double getCandCost(int[][] cand) {
 		double sum = 0;
-
         sum = costCalculator.getPartitionsCost(cand);
-
         /*
 		for (int[] item : cand) {
 			sum += costCalculator.costForPartition(item);
 //			System.out.println(Arrays.toString(item));
 //			sum += costTable.get(Arrays.toString(item));
 		} */
-
 		return sum;
 	}
 
@@ -699,30 +686,31 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 //		ps.remove(new ArrayList<T>()); // remove the empty set
 //		return ps;
 //	}
-	/*public static void main(String[] args) {
-		int[] a = {0, 1, 3,6};
-		int[] b = {0, 3, 4, 5};
-		int[] c = {0, 7, 8, 9, 10};
-		List<int[]> example = new ArrayList<>();
-		example.add(b);
-		example.add(c);
-		   
 	
-		for (int k=0; k<1; k++) {
+//	public static void main(String[] args) {
+//		int[] a = {0, 1, 3,6};
+//		int[] b = {0, 3, 4, 5};
+//		int[] c = {0, 7, 8, 9, 10};
+//		List<int[]> example = new ArrayList<>();
+//		example.add(b);
+//		example.add(c);
+//	
+//		for (int k=0; k<1; k++) {
 //		try {
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
+//				Thread.sleep(5000);
+//		} 
+//		catch (InterruptedException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		List<int[]> result = doMerge(a, example);
-		for (int[] res: result){
-			String values="";
-			for (int l=0; l<res.length; l++) {
-				values+=res[l]+" ";
-			}
-			System.out.println(values);
-			}
-		}
-	}*/
+//		List<int[]> result = doMerge(a, example);
+//		for (int[] res: result){
+//			String values="";
+//			for (int l=0; l<res.length; l++) {
+//				values+=res[l]+" ";
+//			}
+//			System.out.println(values);
+//			}
+//		}
+//	}
 }
