@@ -3,6 +3,7 @@ package experiments;
 import core.algo.vertical.AbstractAlgorithm;
 import core.algo.vertical.AbstractPartitionsAlgorithm;
 import core.algo.vertical.AutoPart;
+import core.algo.vertical.AutoPartCL;
 import core.algo.vertical.DreamPartitioner;
 import core.utils.ArrayUtils;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -56,7 +57,7 @@ public class AlgorithmResults {
      */
     public void storeResults(String tableName, AbstractAlgorithm algorithm, double runTime) {
         partitions.get(tableName).put(algorithm.type, algorithm.getPartitions());
-        if (algorithm instanceof AutoPart || algorithm instanceof DreamPartitioner) {
+        if (algorithm instanceof AutoPart || algorithm instanceof AutoPartCL ||algorithm instanceof DreamPartitioner) {
             bestSolutions.get(tableName).put(algorithm.type, ((AbstractPartitionsAlgorithm)algorithm).getBestSolutions());
         }
         runTimes.get(tableName).put(algorithm.type, runTime);
@@ -70,7 +71,7 @@ public class AlgorithmResults {
     @Deprecated
     public void storeDummyResults(String tableName, AbstractAlgorithm algorithm) { // _TODO remove this method?
         partitions.get(tableName).put(algorithm.type, null);
-        if (algorithm instanceof AutoPart || algorithm instanceof DreamPartitioner) {
+        if (algorithm instanceof AutoPart || algorithm instanceof AutoPartCL ||algorithm instanceof DreamPartitioner) {
             bestSolutions.get(tableName).put(algorithm.type, null);
         }
         runTimes.get(tableName).put(algorithm.type, Double.NaN);
@@ -111,7 +112,7 @@ public class AlgorithmResults {
                 }
 
                 /* Output best solutions. */
-                if (algo.equals(AbstractAlgorithm.Algo.AUTOPART) || algo.equals(AbstractAlgorithm.Algo.DREAM) ) {
+                if (algo.equals(AbstractAlgorithm.Algo.AUTOPART) || algo.equals(AbstractAlgorithm.Algo.AUTOPARTCL) || algo.equals(AbstractAlgorithm.Algo.DREAM) ) {
 
                     int queryCount = results.bestSolutions.get(tableName).get(algo).size();
                     sb.append(queryCount).append(" #query count -- best solutions:\n");
@@ -190,7 +191,7 @@ public class AlgorithmResults {
 
                     results.partitions.get(tableName).put(algo, partitions);
 
-                    if (algo.equals(AbstractAlgorithm.Algo.AUTOPART) || algo.equals(AbstractAlgorithm.Algo.DREAM) ) {
+                    if (algo.equals(AbstractAlgorithm.Algo.AUTOPART) || algo.equals(AbstractAlgorithm.Algo.AUTOPARTCL) ||algo.equals(AbstractAlgorithm.Algo.DREAM) ) {
                         /* Read best solutions. */
                         TIntObjectHashMap<TIntHashSet> bestSolutions = new TIntObjectHashMap<TIntHashSet>();
 

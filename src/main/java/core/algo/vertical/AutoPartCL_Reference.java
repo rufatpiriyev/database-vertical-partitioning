@@ -1,14 +1,24 @@
 package core.algo.vertical;
 
+import java.util.ArrayList;
+
 import core.utils.CollectionUtils;
 import core.utils.PartitioningUtils;
+import db.schema.BenchmarkTables;
 import db.schema.utils.WorkloadUtils;
+import experiments.AlgorithmResults;
+import experiments.AlgorithmRunner;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.jocl.Pointer;
 
 /**
  * Implementation of the AutoPart vertical partitioning algorithm from S.
@@ -17,7 +27,7 @@ import java.util.HashSet;
  * @author Endre Palatinus
  * 
  */
-public class AutoPart extends AbstractPartitionsAlgorithm {
+public class AutoPartCL_Reference extends AbstractPartitionsAlgorithm {
 
 	/**
 	 * The amount of storage available for attribute replication expressed as a
@@ -28,13 +38,57 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 	/** The minimal number of queries that should access a candidate fragment. */
 	private int queryExtentThreshold = 1;
 
-	public AutoPart(AlgorithmConfig config) {
+	public AutoPartCL_Reference(AlgorithmConfig config) {
 		super(config);
-		type = Algo.AUTOPART;
+		type = Algo.AUTOPARTCL;
+	}
+	
+	private HashSet<TIntHashSet> part2InternalLoop (HashSet<TIntHashSet> selectedFragments_prev, HashSet<TIntHashSet> atomicFragments, boolean k) {
+		HashSet<TIntHashSet> candidateFragments = new HashSet<>();
+		
+		/* Convert atomicFragments to small array
+		 * Convert selectedFragments_prev to Big array
+		 * Pass to the kernel a flag k>1
+		 * In our kernel we combine each item in the big array with one in the atomicFragments
+		 * Test the results for queryExtentThreshold. If it passes, return the fragments into a candidate array.
+		 * If k>1, combine the selected fragment with all other and if it pass add the fragments to the candidateFragments*/
+		
+		for (TIntHashSet CF : selectedFragments_prev) { //This part can be parallelized.
+			
+			// with atomic fragments
+			for (TIntHashSet AF : atomicFragments) { 
+				TIntHashSet fragment = new TIntHashSet(CF);
+				fragment.addAll(AF);
+				
+				System.out.println("Fragment Hashset Elements: " + fragment + "\n");
+
+				if (queryExtent(fragment) >= queryExtentThreshold) {
+					candidateFragments.add(fragment);
+				}
+				List <Integer> smallarray = new ArrayList <Integer> ();
+				 
+		       for (Integer atomicFrag: smallarray) {
+		            System.out.println("Smallarray:- " + atomicFrag);
+		        }
+		      }
+			
+			if (k) {
+				for (TIntHashSet F : selectedFragments_prev) {
+					TIntHashSet fragment = new TIntHashSet(CF);
+					fragment.addAll(F);
+					if (queryExtent(fragment) >= queryExtentThreshold) {
+						candidateFragments.add(fragment);
+					}
+				}
+			}
+
+		}
+
+		return candidateFragments;
 	}
 
 	@Override
-	public void doPartition() {
+	public void doPartition()  {
 
         TIntHashSet unReferenced = WorkloadUtils.getNonReferencedAttributes(w.usageMatrix);
         HashSet<TIntHashSet> unRefHashSet = new HashSet<TIntHashSet>();
@@ -44,12 +98,15 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 		/* Atomic fragment selection. */
 
 		HashSet<TIntHashSet> atomicFragments = new HashSet<TIntHashSet>();
-
 		HashSet<TIntHashSet> newFragments = new HashSet<TIntHashSet>();
 		HashSet<TIntHashSet> toBeRemovedFragments = new HashSet<TIntHashSet>();
-
+		
+		/*Part 1
+		  Here we iterate over all queries and for each we get the attributes that the query uses, as a set called QueryExtent.
+		  Next, for each previously considered atomic fragments, we create as a set the intersection of attributes with the current query, and the remainders are also added to a new fragments object.
+		  */ 
+		long init = System.nanoTime();
 		for (int q = 0; q < w.queryCount; q++) {
-
 			TIntHashSet queryExtent = new TIntHashSet(w.attributeCount);
 
 			for (int a = 0; a < w.attributeCount; a++) {
@@ -96,7 +153,9 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 			atomicFragments.removeAll(toBeRemovedFragments);
 			atomicFragments.addAll(newFragments);
 		}
+		long now = System.nanoTime();
 
+		
 		/* Iteration phase */
 
 		/* The partitions in the current solution. */
@@ -122,9 +181,11 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 
 		boolean stoppingCondition = false;
 
-		int iteration=0;
+		/*Part 2-
+		  We consider all possible combinations of both fragments and  add it to the atomic fragments
+		 */
 		while (!stoppingCondition) {
-			//System.out.println("IT: "+iteration+", Start, SF: "+selectedFragments_curr.size());
+			
 			k++;
 
 			/* composite fragment generation */
@@ -133,31 +194,9 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 			selectedFragments_prev.clear();
 			selectedFragments_prev.addAll(selectedFragments_curr);
 
-			for (TIntHashSet CF : selectedFragments_prev) {
-
-				// with atomic fragments
-				for (TIntHashSet AF : atomicFragments) {
-					TIntHashSet fragment = new TIntHashSet(CF);
-					fragment.addAll(AF);
-
-					if (queryExtent(fragment) >= queryExtentThreshold) {
-						candidateFragments.add(fragment);
-					}
-				}
-
-				// with fragments selected in the previous iteration
-				if (k > 1) {
-					for (TIntHashSet F : selectedFragments_prev) {
-						TIntHashSet fragment = new TIntHashSet(CF);
-						fragment.addAll(F);
-
-						if (queryExtent(fragment) >= queryExtentThreshold) {
-							candidateFragments.add(fragment);
-						}
-					}
-				}
-
-			}
+			
+			candidateFragments.addAll(this.part2InternalLoop(selectedFragments_prev, atomicFragments, k>1));
+			
 
 			/* candidate fragment selection */
 
@@ -169,14 +208,14 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 			double bestCost = presentCost;
 			HashSet<TIntHashSet> bestSolution = presentSolution;
 			TIntHashSet selectedFragment = null;
-
+			init = System.nanoTime();
 			while (solutionFound) {
 
 				solutionFound = false;
 
 				for (TIntHashSet candidate : candidateFragments) {
 
-					if (presentSolution.contains(candidate)) {
+					if (presentSolution.contains(candidate)) {//This could be done in parallel, but might not have a big impact.
 						continue;
 					}
 
@@ -209,24 +248,25 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 
 			// update stoppingCondition
 			stoppingCondition = selectedFragments_curr.size() == 0;
-			//System.out.println("IT: "+iteration+", End, SF: "+selectedFragments_curr.size());
-			//iteration++;
 		}
-
+		now = System.nanoTime();
+		//System.out.println("Part 2 duration..."+(now-init));
 		profiler.numberOfIterations = k;
 
 		partitions = PartitioningUtils.getPartitioningMap(presentSolution);
 
 		/* pairwise merge phase */
-
+		
 		stoppingCondition = false;
 
+		/*Part 3- Pairwise merge*/
 		double bestCost = costCalculator.findPartitionsCost(PartitioningUtils.getPartitioningMap(presentSolution));
 		int bestI = 0, bestJ = 0; // the indexes of the to-be merged fragments
 
 		/* just a utility representation of the solution */
 		TIntObjectHashMap<TIntHashSet> partitionsMap;
 
+		init = System.nanoTime();
 		while (!stoppingCondition) {
 			stoppingCondition = true;
 			//partitionsMap = CollectionUtils.deepClone(partitions);
@@ -268,6 +308,8 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 				presentSolution.add(mergedIJ);
 			}
 		}
+		now = System.nanoTime();
+		//System.out.println(" Part 3 Duration..."+(now-init));
 
         if (unReferenced.size() > 0) {
             presentSolution.add(unReferenced);
@@ -416,4 +458,20 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 	public void setQueryExtentThreshold(int queryExtentThreshold) {
 		this.queryExtentThreshold = queryExtentThreshold;
 	}
-}
+    
+	public static void main (String[] args) {
+		 String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};
+	        Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
+//	        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
+//			  AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
+	        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AbstractAlgorithm.Algo.AUTOPART};
+	        for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
+	            algos_sel.add(algo);
+	        }
+	        AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.randomTable(1, 1)));
+	        algoRunner.runTPC_H_All();
+	        String output = AlgorithmResults.exportResults(algoRunner.results);
+
+	        System.out.println(output);
+	    }
+	}

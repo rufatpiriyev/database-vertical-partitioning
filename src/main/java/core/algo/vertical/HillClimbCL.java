@@ -31,8 +31,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
      */
 	
 	private static String programSource =      		
-		   
-				
+		   		
 			 " kernel void comparer(__global const int* bigArray, __global const int* smallArray, __global int* output,  __global const int* m, __global const int* n)"
 		     + "    {"
 		     + "        int id= (int)get_global_id(0); "		     
@@ -41,8 +40,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		     +"			}"	   
 		     + "    }";
 	private static String programSource_largeScale =      		
-			   
-	            			
+			   	            			
 			 " kernel void comparer_largeScale(__global const int* bigArray, __global const int* smallArray, __global int* output,  __global const int* m, __global const int* fromsize, __global const int* from, __global const int* to,  __global const int* n)"
 		     + "    {"
 		     + "        int id= (int)get_global_id(0); "		     
@@ -56,8 +54,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		     + "    }";
 	
 	private static String programSource2 =      		
-			   
-					
+			   					
 				 " kernel void merger(__global const int* src, __global const int* srcBitmask, __global const int* srcPoslist,  __global int* output, __global const int* n)"
 			     + "    {"
 			     + "        int id= (int)get_global_id(0);"
@@ -96,11 +93,12 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		}
 		
 		double candCost = getCandCost(cand);
-		//System.out.println("Cost: "+candCost);
+		System.out.println("Cost: "+candCost);
+		
 		double minCost;
 		List<int[][]> candList = new ArrayList<int[][]>();
 		int[][] R;
-		int[] s;
+		//int[] s;
 		
 		do {
 			R = cand;
@@ -116,7 +114,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 					//What I need to fill here is R[j]
 				}
 				partialResults = doMerge(R[i], tempCandidateList);//We already parallelized the candidate generation.
-				
+				//partial result is our s in actual code
 				int counter = 0;
 				for (int j = i + 1; j < R.length; j++) {//We still need to double-check this, to see if we are missing out some parallelization
 					cand = new int[R.length-1][];
@@ -333,7 +331,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         	posString+=" "+posArray[j];
         	toString+=" "+toArray[j];
         }
-       // System.out.println("Pos Array- "+posString);
+        //System.out.println("Pos Array- "+posString);
         //System.out.println("To Array- "+toString);
         
         
@@ -529,6 +527,8 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 			smallPosList[i]=counter;
 			if (prefixResults[i]==1) {
 				counter++;
+				
+				
 			}
 		}
 
@@ -621,8 +621,8 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
         /*
 		for (int[] item : cand) {
 			sum += costCalculator.costForPartition(item);
-//			System.out.println(Arrays.toString(item));
-//			sum += costTable.get(Arrays.toString(item));
+			System.out.println(Arrays.toString(item));
+			sum += costTable.get(Arrays.toString(item));
 		} */
 		return sum;
 	}

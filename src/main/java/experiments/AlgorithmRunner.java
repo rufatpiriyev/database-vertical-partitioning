@@ -37,6 +37,7 @@ public class AlgorithmRunner {
 
     protected DreamPartitioner dreamPartitioner;
     protected AutoPart autoPart;
+    protected AutoPartCL autoPartCL;
     protected HillClimb hillClimb;
     protected HillClimbCL hillClimbCL;
     protected HYRISE hyrise;
@@ -53,7 +54,7 @@ public class AlgorithmRunner {
     /** The list of algorithms to run. */
     protected Set<AbstractAlgorithm.Algo> algos;
     /** The default list of algorithms to run. */
-    public static final AbstractAlgorithm.Algo[] ALL_ALGOS = {AUTOPART, HILLCLIMB, HYRISE, NAVATHE, O2P, TROJAN,
+    public static final AbstractAlgorithm.Algo[] ALL_ALGOS = {AUTOPART, HILLCLIMB, AUTOPARTCL, HYRISE, NAVATHE, O2P, TROJAN,
             OPTIMAL, DREAM, COLUMN, ROW};
 
     /* JVM and testing specific parameters. */
@@ -353,6 +354,10 @@ public class AlgorithmRunner {
         autoPart.setReplicationFactor(0.0);
         runAlgorithm(autoPart, tableName);
 
+        autoPartCL = new AutoPartCL(config);
+        autoPartCL.setReplicationFactor(0.0);
+        runAlgorithm(autoPartCL, tableName);
+        
         hillClimb = new HillClimb(config);
         runAlgorithm(hillClimb, tableName);
 
@@ -410,6 +415,9 @@ public class AlgorithmRunner {
 
         runTimes[algorithm.type.ordinal()] /= REPETITIONS;
         results.storeResults(tableName, algorithm, runTimes[algorithm.type.ordinal()]);
+        if (algorithm.type.equals(autoPartCL.type)) {
+        	System.out.println("Total opt time (in seconds): "+ (double)(autoPartCL.totalOptTime/1000000000.0));
+        }
     }
 
     private TrojanLayout runTrojan(TrojanLayout algorithm, AbstractAlgorithm.AlgorithmConfig config, double[] trojanLayoutThresholds, String tableName) {
@@ -452,8 +460,8 @@ public class AlgorithmRunner {
         String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};
         Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
 //        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
-        //AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
-        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {HILLCLIMBCL};
+//		  AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
+        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPARTCL};
         for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
             algos_sel.add(algo);
         }

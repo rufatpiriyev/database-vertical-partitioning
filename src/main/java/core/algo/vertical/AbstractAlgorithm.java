@@ -11,7 +11,7 @@ import gnu.trove.set.hash.TIntHashSet;
 
 public abstract class AbstractAlgorithm {
 
-	public static enum Algo {ROW, AUTOPART, HILLCLIMB, HYRISE, INTGBASED, NAVATHE, O2P, OPTIMAL, TROJAN, LIFT, DREAM, COLUMN, HILLCLIMBCL}
+	public static enum Algo {ROW, AUTOPART, HILLCLIMB, HYRISE, INTGBASED, NAVATHE, O2P, OPTIMAL, TROJAN, LIFT, DREAM, COLUMN, HILLCLIMBCL, AUTOPARTCL}
 	public Algo type;
 
 	protected Workload workload;
@@ -165,6 +165,7 @@ public abstract class AbstractAlgorithm {
 	public static AbstractAlgorithm getAlgo(Algo algo, AlgorithmConfig config){
 		switch(algo){
 		case AUTOPART:	return new AutoPart(config);
+		case AUTOPARTCL:	return new AutoPartCL(config);
 		case HILLCLIMB:	return new HillClimb(config);
 		case HYRISE:	return new HYRISE(config);
 		case NAVATHE:	return new NavatheAlgorithm(config);
