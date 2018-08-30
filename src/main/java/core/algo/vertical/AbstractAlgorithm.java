@@ -11,7 +11,9 @@ import gnu.trove.set.hash.TIntHashSet;
 
 public abstract class AbstractAlgorithm {
 
-	public static enum Algo {ROW, AUTOPART, HILLCLIMB, HYRISE, INTGBASED, NAVATHE, O2P, OPTIMAL, TROJAN, LIFT, DREAM, COLUMN, HILLCLIMBCL}
+	public static enum Algo {ROW, AUTOPART, HILLCLIMB, HYRISE, INTGBASED, NAVATHE, O2P, OPTIMAL, TROJAN, LIFT, DREAM, COLUMN, 
+		HILLCLIMBCL //VERY IMPORTANT, NEVER USE THIS.
+		}
 	public Algo type;
 
 	protected Workload workload;

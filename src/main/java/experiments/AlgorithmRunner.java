@@ -2,10 +2,16 @@ package experiments;
 
 import core.algo.vertical.*;
 import core.config.DataConfig;
+import core.utils.ArrayUtils;
 import db.schema.BenchmarkTables;
+import db.schema.BenchmarkTables.BenchmarkConfig;
+import db.schema.entity.Attribute;
 import db.schema.entity.Table;
+import db.schema.types.TableType;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static core.algo.vertical.AbstractAlgorithm.Algo.*;
@@ -23,6 +29,7 @@ public class AlgorithmRunner {
     };
 
     public String[] querySet;
+    
 
     public static final int replicationFactor = 1;
     public static final double THRESHOLD = 0.0;
@@ -449,19 +456,51 @@ public class AlgorithmRunner {
 
     /*Begin Debugging Begin*/
     public static void main(String[] args) {
-        String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};
-        Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
-//        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
-        //AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
-        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {HILLCLIMBCL};
+    	/*Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
+    	String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};
+        AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
         for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
             algos_sel.add(algo);
         }
         AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.randomTable(1, 1)));
         algoRunner.runTPC_H_All();
-        String output = AlgorithmResults.exportResults(algoRunner.results);
+        String output = AlgorithmResults.exportResults(algoRunner.results);*/
+//        AlgorithmRunner algorithmRunner = new AlgorithmRunner();
+//        algorithmRunner.runTPC_H_All();
+//        System.out.println(AlgorithmResults.exportResults(algorithmRunner.results));
 
-        System.out.println(output);
+        //System.out.println(output);
+    	
+    	
+    	
+    	String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};
+    	Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
+    	AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, O2P, DREAM};
+        for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
+            algos_sel.add(algo);
+        }
+        BenchmarkConfig bc = new BenchmarkConfig("data/", 10, TableType.Default());
+        AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 1, queries, new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.tpchLineitem(bc)));
+        algoRunner.runTPC_H_LineItem(true);
+        AbstractAlgorithm.AlgorithmConfig config = algoRunner.getConfiguration();
+        Table tab = config.getTable();
+       // List<Attribute> attributes = tab.getAttributes();	
+        
+//        for(Attribute attr: attributes) {
+//        	System.out.println(attr.name);
+//        }
+//        
+//        String output = AlgorithmResults.exportResults(algoRunner.results);
+//        System.out.println(output);
+        
+        
+        
+        
     }
+    
+    public AbstractAlgorithm.AlgorithmConfig getConfiguration(){
+    	return this.config;
+    }
+    
     /*End Debugging End*/
 }
