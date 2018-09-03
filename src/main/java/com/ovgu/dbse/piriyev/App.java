@@ -1,26 +1,30 @@
 package com.ovgu.dbse.piriyev;
 
-import com.ovgu.dbse.piriyev.resources.PartitionResource;
-import io.dropwizard.Application;
-import io.dropwizard.jdbi.DBIFactory;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import org.skife.jdbi.v2.DBI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON;
-import com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider;
-import com.wordnik.swagger.jaxrs.listing.ResourceListingProvider;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
-import com.wordnik.swagger.jaxrs.config.DefaultJaxrsScanner;
-import com.wordnik.swagger.config.ScannerFactory;
-import com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader;
-import com.wordnik.swagger.config.SwaggerConfig;
-import com.wordnik.swagger.config.ConfigFactory;
+import java.util.EnumSet;
+
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
+
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ovgu.dbse.piriyev.resources.PartitionResource;
+import com.wordnik.swagger.config.ConfigFactory;
+import com.wordnik.swagger.config.ScannerFactory;
+import com.wordnik.swagger.config.SwaggerConfig;
+import com.wordnik.swagger.jaxrs.config.DefaultJaxrsScanner;
+import com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider;
+import com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON;
+import com.wordnik.swagger.jaxrs.listing.ResourceListingProvider;
+import com.wordnik.swagger.jaxrs.reader.DefaultJaxrsApiReader;
 import com.wordnik.swagger.reader.ClassReaders;
-import java.util.EnumSet;
+
+import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+
 public class App extends Application<PartitionConfiguration>
 {
     public static final Logger LOGGER = LoggerFactory.getLogger(App.class);
@@ -55,7 +59,9 @@ public class App extends Application<PartitionConfiguration>
     }
     
     @Override
-    public void initialize(Bootstrap<PartitionConfiguration> b) {}
+    public void initialize(Bootstrap<PartitionConfiguration> b) {
+    	b.addBundle(new AssetsBundle("/swagger/", "/docs", "index.html"));
+    }
 
     @Override
     public void run(PartitionConfiguration configuration, Environment environment) throws Exception {
