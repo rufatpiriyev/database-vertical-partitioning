@@ -40,4 +40,10 @@ public class PartitionConfiguration extends Configuration {
     public String getAdditionalMessage() {
         return this.additionalMessage;
     }
+    
+    @Valid
+    @NotNull
+    @JsonProperty
+    private String swaggerBasePath;
+    public String getSwaggerBasePath(){ return swaggerBasePath; }
 }

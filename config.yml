@@ -4,3 +4,4 @@ database:
   driverClass: org.postgresql.Driver
   user: phonebook_app
   url: 'jdbc:postgresql://localhost/phonebook'
+swaggerBasePath: http://localhost:8080

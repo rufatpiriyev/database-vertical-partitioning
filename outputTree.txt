@@ -1,0 +1,131 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building database-vertical-partitioning 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ database-vertical-partitioning ---
+[INFO] org:database-vertical-partitioning:jar:0.0.1-SNAPSHOT
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- net.sf.trove4j:trove4j:jar:3.0.3:compile
+[INFO] +- org.postgresql:postgresql:jar:42.1.4:compile
+[INFO] +- org.jocl:jocl:jar:2.0.0:compile
+[INFO] +- com.wordnik:swagger-jaxrs_2.10:jar:1.3.12:compile
+[INFO] |  +- org.scala-lang:scala-library:jar:2.10.4:compile
+[INFO] |  +- com.wordnik:swagger-core_2.10:jar:1.3.12:compile
+[INFO] |  |  +- com.fasterxml.jackson.module:jackson-module-scala_2.10:jar:2.4.1:compile
+[INFO] |  |  |  +- org.scala-lang:scala-reflect:jar:2.10.4:compile
+[INFO] |  |  |  \- com.thoughtworks.paranamer:paranamer:jar:2.6:compile
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.4.1:compile
+[INFO] |  |  +- com.fasterxml.jackson.module:jackson-module-jsonSchema:jar:2.4.1:compile
+[INFO] |  |  +- com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.4.1:compile
+[INFO] |  |  |  +- com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:jar:2.4.1:compile
+[INFO] |  |  |  \- com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.4.1:compile
+[INFO] |  |  +- com.wordnik:swagger-annotations:jar:1.3.12:compile
+[INFO] |  |  +- org.json4s:json4s-ext_2.10:jar:3.2.11:compile
+[INFO] |  |  |  \- org.joda:joda-convert:jar:1.6:compile
+[INFO] |  |  +- org.json4s:json4s-native_2.10:jar:3.2.11:compile
+[INFO] |  |  |  \- org.json4s:json4s-core_2.10:jar:3.2.11:compile
+[INFO] |  |  |     +- org.json4s:json4s-ast_2.10:jar:3.2.11:compile
+[INFO] |  |  |     \- org.scala-lang:scalap:jar:2.10.0:compile
+[INFO] |  |  |        \- org.scala-lang:scala-compiler:jar:2.10.0:compile
+[INFO] |  |  \- org.json4s:json4s-jackson_2.10:jar:3.2.11:compile
+[INFO] |  +- javax.ws.rs:jsr311-api:jar:1.1.1:compile
+[INFO] |  \- org.reflections:reflections:jar:0.9.9:compile
+[INFO] |     +- com.google.guava:guava:jar:15.0:compile
+[INFO] |     +- org.javassist:javassist:jar:3.18.2-GA:compile
+[INFO] |     \- com.google.code.findbugs:annotations:jar:2.0.1:compile
+[INFO] +- org.eclipse.jetty:jetty-servlets:jar:9.2.9.v20150224:compile
+[INFO] |  +- org.eclipse.jetty:jetty-continuation:jar:9.2.9.v20150224:compile
+[INFO] |  +- org.eclipse.jetty:jetty-http:jar:9.2.9.v20150224:compile
+[INFO] |  +- org.eclipse.jetty:jetty-util:jar:9.2.9.v20150224:compile
+[INFO] |  \- org.eclipse.jetty:jetty-io:jar:9.2.9.v20150224:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.7:compile
+[INFO] +- org.slf4j:jul-to-slf4j:jar:1.7.7:compile
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.7:compile
+[INFO] +- org.slf4j:log4j-over-slf4j:jar:1.7.7:compile
+[INFO] +- org.slf4j:slf4j-jdk14:jar:1.7.7:compile
+[INFO] +- io.dropwizard:dropwizard-core:jar:1.3.5:compile
+[INFO] |  +- io.dropwizard:dropwizard-util:jar:1.3.5:compile
+[INFO] |  |  +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+[INFO] |  |  \- joda-time:joda-time:jar:2.9.9:compile
+[INFO] |  +- io.dropwizard:dropwizard-jackson:jar:1.3.5:compile
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-core:jar:2.9.6:compile
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.9.6:compile
+[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-guava:jar:2.9.6:compile
+[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.9.6:compile
+[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.9.6:compile
+[INFO] |  |  +- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.9.6:compile
+[INFO] |  |  +- com.fasterxml.jackson.module:jackson-module-afterburner:jar:2.9.6:compile
+[INFO] |  |  \- com.fasterxml.jackson.datatype:jackson-datatype-joda:jar:2.9.6:compile
+[INFO] |  +- io.dropwizard:dropwizard-validation:jar:1.3.5:compile
+[INFO] |  |  +- org.hibernate:hibernate-validator:jar:5.4.2.Final:compile
+[INFO] |  |  |  +- javax.validation:validation-api:jar:1.1.0.Final:compile
+[INFO] |  |  |  +- org.jboss.logging:jboss-logging:jar:3.3.0.Final:compile
+[INFO] |  |  |  \- com.fasterxml:classmate:jar:1.3.1:compile
+[INFO] |  |  \- org.glassfish:javax.el:jar:3.0.0:compile
+[INFO] |  +- io.dropwizard:dropwizard-configuration:jar:1.3.5:compile
+[INFO] |  |  +- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.9.6:compile
+[INFO] |  |  |  \- org.yaml:snakeyaml:jar:1.18:compile
+[INFO] |  |  +- org.apache.commons:commons-lang3:jar:3.7:compile
+[INFO] |  |  \- org.apache.commons:commons-text:jar:1.2:compile
+[INFO] |  +- io.dropwizard:dropwizard-logging:jar:1.3.5:compile
+[INFO] |  |  +- io.dropwizard.metrics:metrics-logback:jar:4.0.2:compile
+[INFO] |  |  +- ch.qos.logback:logback-core:jar:1.2.3:compile
+[INFO] |  |  \- ch.qos.logback:logback-classic:jar:1.2.3:compile
+[INFO] |  +- io.dropwizard:dropwizard-metrics:jar:1.3.5:compile
+[INFO] |  +- io.dropwizard:dropwizard-jersey:jar:1.3.5:compile
+[INFO] |  |  +- org.glassfish.jersey.core:jersey-server:jar:2.25.1:compile
+[INFO] |  |  |  +- org.glassfish.jersey.core:jersey-common:jar:2.25.1:compile
+[INFO] |  |  |  |  +- org.glassfish.jersey.bundles.repackaged:jersey-guava:jar:2.25.1:compile
+[INFO] |  |  |  |  \- org.glassfish.hk2:osgi-resource-locator:jar:1.0.1:compile
+[INFO] |  |  |  +- org.glassfish.jersey.core:jersey-client:jar:2.25.1:compile
+[INFO] |  |  |  +- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:compile
+[INFO] |  |  |  +- org.glassfish.jersey.media:jersey-media-jaxb:jar:2.25.1:compile
+[INFO] |  |  |  +- javax.annotation:javax.annotation-api:jar:1.2:compile
+[INFO] |  |  |  +- org.glassfish.hk2:hk2-api:jar:2.5.0-b32:compile
+[INFO] |  |  |  |  +- org.glassfish.hk2:hk2-utils:jar:2.5.0-b32:compile
+[INFO] |  |  |  |  \- org.glassfish.hk2.external:aopalliance-repackaged:jar:2.5.0-b32:compile
+[INFO] |  |  |  +- org.glassfish.hk2.external:javax.inject:jar:2.5.0-b32:compile
+[INFO] |  |  |  \- org.glassfish.hk2:hk2-locator:jar:2.5.0-b32:compile
+[INFO] |  |  +- org.glassfish.jersey.ext:jersey-metainf-services:jar:2.25.1:compile
+[INFO] |  |  +- org.glassfish.jersey.ext:jersey-bean-validation:jar:2.25.1:compile
+[INFO] |  |  +- io.dropwizard.metrics:metrics-jersey2:jar:4.0.2:compile
+[INFO] |  |  +- org.glassfish.jersey.containers:jersey-container-servlet:jar:2.25.1:compile
+[INFO] |  |  |  \- org.glassfish.jersey.containers:jersey-container-servlet-core:jar:2.25.1:compile
+[INFO] |  |  +- org.eclipse.jetty:jetty-server:jar:9.4.11.v20180605:compile
+[INFO] |  |  |  \- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] |  |  \- org.eclipse.jetty:jetty-webapp:jar:9.4.11.v20180605:compile
+[INFO] |  |     \- org.eclipse.jetty:jetty-xml:jar:9.4.11.v20180605:compile
+[INFO] |  +- io.dropwizard:dropwizard-servlets:jar:1.3.5:compile
+[INFO] |  |  \- io.dropwizard.metrics:metrics-annotation:jar:4.0.2:compile
+[INFO] |  +- io.dropwizard:dropwizard-jetty:jar:1.3.5:compile
+[INFO] |  |  +- io.dropwizard.metrics:metrics-jetty9:jar:4.0.2:compile
+[INFO] |  |  \- org.eclipse.jetty:jetty-servlet:jar:9.4.11.v20180605:compile
+[INFO] |  |     \- org.eclipse.jetty:jetty-security:jar:9.4.11.v20180605:compile
+[INFO] |  +- io.dropwizard:dropwizard-lifecycle:jar:1.3.5:compile
+[INFO] |  +- io.dropwizard.metrics:metrics-core:jar:4.0.2:compile
+[INFO] |  +- io.dropwizard.metrics:metrics-jvm:jar:4.0.2:compile
+[INFO] |  +- io.dropwizard.metrics:metrics-jmx:jar:4.0.2:compile
+[INFO] |  +- io.dropwizard.metrics:metrics-servlets:jar:4.0.2:compile
+[INFO] |  |  +- io.dropwizard.metrics:metrics-json:jar:4.0.2:compile
+[INFO] |  |  \- com.papertrail:profiler:jar:1.0.2:compile
+[INFO] |  +- io.dropwizard.metrics:metrics-healthchecks:jar:4.0.2:compile
+[INFO] |  +- io.dropwizard:dropwizard-request-logging:jar:1.3.5:compile
+[INFO] |  |  \- ch.qos.logback:logback-access:jar:1.2.3:compile
+[INFO] |  +- net.sourceforge.argparse4j:argparse4j:jar:0.8.1:compile
+[INFO] |  \- org.eclipse.jetty.toolchain.setuid:jetty-setuid-java:jar:1.0.3:compile
+[INFO] \- io.dropwizard:dropwizard-jdbi:jar:0.9.0-rc2:compile
+[INFO]    +- io.dropwizard:dropwizard-db:jar:0.9.0-rc2:compile
+[INFO]    |  \- org.apache.tomcat:tomcat-jdbc:jar:8.0.21:compile
+[INFO]    |     \- org.apache.tomcat:tomcat-juli:jar:8.0.21:compile
+[INFO]    +- org.jdbi:jdbi:jar:2.62:compile
+[INFO]    \- io.dropwizard.metrics:metrics-jdbi:jar:3.1.2:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.713 s
+[INFO] Finished at: 2018-09-03T12:06:07+02:00
+[INFO] Final Memory: 22M/337M
+[INFO] ------------------------------------------------------------------------

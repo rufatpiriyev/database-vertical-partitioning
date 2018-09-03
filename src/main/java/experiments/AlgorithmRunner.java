@@ -7,8 +7,11 @@ import db.schema.BenchmarkTables;
 import db.schema.BenchmarkTables.BenchmarkConfig;
 import db.schema.entity.Attribute;
 import db.schema.entity.Table;
+import db.schema.entity.Workload;
+import db.schema.types.AttributeType;
 import db.schema.types.TableType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -472,26 +475,59 @@ public class AlgorithmRunner {
         //System.out.println(output);
     	
     	
+    	//Define Table: List of attributes, names, primary key, table name, scale factor, number of rows
+    	List<Attribute> attr = new ArrayList<>();
+    	Attribute a = new Attribute("A", AttributeType.Integer());
+		a.primaryKey = true;
+		attr.add(a);
+		Attribute b = new Attribute("B", AttributeType.Boolean());
+		b.primaryKey = false;
+		attr.add(b);
+		Attribute c = new Attribute("C", AttributeType.Integer());
+		c.primaryKey = false;
+		attr.add(c);
+    	Table t = new Table("DummyTable", TableType.Default(), attr);
+
     	
-    	String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};
+    	//Define Queries (and assign to both table and algorithm runner): Names, and type of each query
+    	String[] queries = {"Q1","Q3"};
+    	Workload wkld = new Workload(attr, 60000, "DummyTable");
+    	wkld.addProjectionQuery("Q1", 1, 1);
+    	wkld.addProjectionQuery("Q3", 1, 2);
+    	t.workload = wkld; //I think that here we also get a chance of changing the cost model
+
+
+    	//Define cost model (and complete configuration for the algorithm)
+    	AbstractAlgorithm.HDDAlgorithmConfig conf = new AbstractAlgorithm.HDDAlgorithmConfig(t);
+    	//conf.setW(wkld.getSimplifiedWorkload());//Here we are choosing the cost model, implicitly
+
+    	//Define: Partitioning Algorithms
     	Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
     	AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, O2P, DREAM};
-        for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
+    	for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
             algos_sel.add(algo);
         }
-        BenchmarkConfig bc = new BenchmarkConfig("data/", 10, TableType.Default());
-        AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 1, queries, new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.tpchLineitem(bc)));
-        algoRunner.runTPC_H_LineItem(true);
-        AbstractAlgorithm.AlgorithmConfig config = algoRunner.getConfiguration();
-        Table tab = config.getTable();
-       // List<Attribute> attributes = tab.getAttributes();	
+    	
+    	//DEfine algorithm runner (same for all)
+        AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, conf);
         
-//        for(Attribute attr: attributes) {
-//        	System.out.println(attr.name);
-//        }
-//        
-//        String output = AlgorithmResults.exportResults(algoRunner.results);
-//        System.out.println(output);
+        //Run
+        algoRunner.runAlgorithms(conf, null);
+
+        //algoRunner.runTPC_H_LineItem(true);
+        
+        //Get results....
+        AbstractAlgorithm.AlgorithmConfig config = algoRunner.getConfiguration();
+        
+        Table tab = config.getTable();
+        List<Attribute> attributes = tab.attributes;	
+        
+        for(Attribute attrib: attributes) {
+        	System.out.println(attrib.name);
+        }
+        
+        String output = AlgorithmResults.exportResults(algoRunner.results);
+        System.out.println(output);
         
         
         

@@ -610,6 +610,40 @@ public class BenchmarkTables {
 		return t;
 	}
 	
+	/**
+	 * Method for generating a table containing only integer attributes with names A, B, C, D... 
+	 */
+	public static Table complexTable(TableType type, List<AttributeType> types){
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		Attribute a = new Attribute("A", AttributeType.Integer());
+		a.primaryKey = true;
+		attributes.add(a);
+		
+		for(int i=1;i<types.size();i++){
+			attributes.add(new Attribute(Character.toString((char)(65+i)), types.get(i)));
+		}
+		//attributes.add(new Attribute("B", AttributeType.Integer()));
+		//attributes.add(new Attribute("C", AttributeType.Integer()));
+		//attributes.add(new Attribute("D", AttributeType.Integer()));
+		
+		Table t = new Table("sample", type, attributes);
+		t.pk = "A";
+		return t;
+	}
+	
+	/**
+	 * Method for generating a table containing only integer attributes with names A, B, C, D...
+	 * The caller needs to provide a list of attributes with some marked as primary keys, and has to give a string with the
+	 * names of the pks. 
+	 */
+	public static Table complexTableWithNames(TableType type, List<Attribute> attr, String pk){
+		List<Attribute> attributes = attr;
+		
+		Table t = new Table("sample", type, attributes);
+		t.pk = pk;
+		return t;
+	}
+	
 	public static void generateSimpleTable(String filename, String delimiter, int size, int numAttrs){
 		
 		Random r = new Random(System.currentTimeMillis());

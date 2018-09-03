@@ -109,7 +109,7 @@ public abstract class AbstractAlgorithm {
         public void setW(Workload.SimplifiedWorkload w) {
             this.w = w;
         }
-
+        
         @Override
         public abstract AlgorithmConfig clone();
     }
@@ -142,6 +142,10 @@ public abstract class AbstractAlgorithm {
         @Override
         public void setW(Workload.SimplifiedWorkload w) {
             costModel = (HDDCostModel)CostModel.getCostModel(CostModel.CMType.HDD, w);
+        }
+        
+        public void setWSel(Workload.SimplifiedWorkload w) {
+            costModel = (HDDCostModel)CostModel.getCostModel(CostModel.CMType.HDDSelectivity, w);
         }
 
         @Override
