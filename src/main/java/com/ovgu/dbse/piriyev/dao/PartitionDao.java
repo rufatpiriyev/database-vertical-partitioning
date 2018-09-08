@@ -7,6 +7,7 @@ import com.ovgu.dbse.piriyev.representation.Partition;
 
 
 public interface PartitionDao {
-	   public  Partition getByName(List<String> algorithms);
+	   public  Partition getByName(List<String> algorithms, List<String> queries);
+	   public  Partition getByJson(String jsonString);  
 }
 

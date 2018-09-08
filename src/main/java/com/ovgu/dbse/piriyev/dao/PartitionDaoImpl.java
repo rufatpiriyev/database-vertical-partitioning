@@ -40,12 +40,12 @@ public class PartitionDaoImpl implements PartitionDao {
 	}
 	
 	
-	public Partition getByName(List<String> algorithms) {
+	public Partition getByName(List<String> algorithms, List<String> queries) {
 		
 		partition = new Partition(algorithms);
 		
 	    
-		String[] queries = {"A1", "A2", "A3"};
+		//String[] queries = {"A1", "A2", "A3"};
     	Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
     	
     
@@ -64,18 +64,24 @@ public class PartitionDaoImpl implements PartitionDao {
         
         for(AbstractAlgorithm.Algo algo: algos_sel) {
         	 Algorithm algorithmResult = new Algorithm(algo.name());
-        	 AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.randomTable(1, 1)));
+        	 AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, (String[])queries.toArray(), new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.randomTable(1, 1)));
         	 algoRunner.runTPC_H_All();
         	 AbstractAlgorithm.AlgorithmConfig config = algoRunner.getConfiguration();
              Table tab = config.getTable();
             // List<Attribute> attributes = tab.getAttributes();
            //  algorithmResult.setTableAttributes(attributes);
              HashMap<String, HashMap<AbstractAlgorithm.Algo, Double>>  runtimes = getBestRuntimes(algoRunner.results);
-             algorithmResult.setResponseTime(runtimes);
+           //  algorithmResult.setResponseTime(runtimes);
            //  Map<Integer, int[]> partitions = AlgorithmResults.getPartititons(tab.name, algo, algoRunner.results);
              //algorithmResult.setPartitions(partitions);
              partition.addAlgorithmResults(algorithmResult);
         }
+        
+      
+    
+        
+        
+        
         
         
         
@@ -98,6 +104,18 @@ public class PartitionDaoImpl implements PartitionDao {
 		return partition;
 	}
 	
+    public Partition getByJson(String jsonString) {
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	return null;
+    	
+    }
+	
    public static HashMap<String, HashMap<AbstractAlgorithm.Algo, Double>> getBestRuntimes (AlgorithmResults results) {
    	 return results.runTimes;
    }
@@ -109,4 +127,7 @@ public class PartitionDaoImpl implements PartitionDao {
    public static HashMap<String, HashMap<AbstractAlgorithm.Algo, TIntObjectHashMap<TIntHashSet>>> getPartitons (AlgorithmResults results){
 	  return results.partitions;
    }
+   
+   
+   
 }

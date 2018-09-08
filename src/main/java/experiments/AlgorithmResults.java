@@ -1,6 +1,7 @@
 package experiments;
 
 import core.algo.vertical.AbstractAlgorithm;
+import core.algo.vertical.AbstractAlgorithm.Algo;
 import core.algo.vertical.AbstractPartitionsAlgorithm;
 import core.algo.vertical.AutoPart;
 import core.algo.vertical.DreamPartitioner;
@@ -12,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
@@ -139,6 +141,47 @@ public class AlgorithmResults {
     public static int firstIntToken(String s) {
         return Integer.parseInt(s.substring(0, s.indexOf(" ")));
     }
+    
+    
+    
+    public static Map<Integer, int[]> getPartititons(String tableName, Algo algo, AlgorithmResults results){
+    	
+    	Map<Integer, int[]> partitions = new HashMap<Integer, int[]>();
+    	
+    	int partitionCount = results.partitions.get(tableName).get(algo).size();
+    	int[] partitionArray = Arrays.copyOf(results.partitions.get(tableName).get(algo).keys(), partitionCount);
+    	
+    	Integer x = 0;
+         for (int p : partitionArray) {
+             int[] partition = results.partitions.get(tableName).get(algo).get(p).toArray();
+             partitions.put(x, partition);
+             //sb.append(x + ": " + ArrayUtils.arrayToString(partition, " ")).append('\n');
+             x++;
+         }
+         return partitions;
+    }
+    
+    
+    public static double getBestRuntime(String tableName, Algo algo, AlgorithmResults results){
+    	
+    	return results.runTimes.get(tableName).get(algo).doubleValue();
+    	
+    	
+//    	Map<Integer, int[]> partitions = new HashMap<Integer, int[]>();
+//    	
+//    	int partitionCount = results.partitions.get(tableName).get(algo).size();
+//    	int[] partitionArray = Arrays.copyOf(results.partitions.get(tableName).get(algo).keys(), partitionCount);
+//    	
+//    	Integer x = 0;
+//         for (int p : partitionArray) {
+//             int[] partition = results.partitions.get(tableName).get(algo).get(p).toArray();
+//             partitions.put(x, partition);
+//             //sb.append(x + ": " + ArrayUtils.arrayToString(partition, " ")).append('\n');
+//             x++;
+//         }
+//         return partitions;
+    }
+    
 
     /**
      * Method for getting the first decimal value from a line possibly containing comments at the end as well.
