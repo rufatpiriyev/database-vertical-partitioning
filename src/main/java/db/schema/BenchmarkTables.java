@@ -216,6 +216,7 @@ public class BenchmarkTables {
 		attributes.add(new Attribute("l_Comment", AttributeType.CharacterVarying(44)));
 		
 		Table t = new Table("lineitem", conf.getTableType(), attributes);
+		
 		t.pk = "l_OrderKey,l_Linenumber";
 		t.workload = BenchmarkWorkloads.tpchLineitem(attributes, conf.getScaleFactor());
 		t.workload.dataFileName = conf.getDataFileDir() + "lineitem.tbl";

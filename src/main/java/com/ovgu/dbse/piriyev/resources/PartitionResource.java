@@ -55,31 +55,6 @@ public class PartitionResource {
     public PartitionResource() {
     	partitionDao = new PartitionDaoImpl();
     }
-
-//    @GET
-//    public Response indexContacts() {
-//    	return null;
-//    	//Partition partition = partitionDao.getByName("wwwr");
-//        //return Response.ok(partition).build();
-//    }
-
-    /*@GET
-    @Timed
-    @ApiOperation(value="Return the list of algorithms", notes="Anything.")
-    @ApiResponses(value={
-            @ApiResponse(code=400, message="Invalid ID"),
-    })
-    public Response testAlgorithm() {
-    	
-    	List<String> algorithms=info.getQueryParameters().get("algorithms");
-    	List<String> queries=info.getQueryParameters().get("queries");
-    	
-    	//List<String> algorithms = Arrays.asList(algs.split(","));
-    	
-        Partition partition = partitionDao.getByName(algorithms, queries);
-        
-        return Response.ok(partition).build();
-    }*/
     
     @GET
 	@Produces(MediaType.APPLICATION_JSON)
