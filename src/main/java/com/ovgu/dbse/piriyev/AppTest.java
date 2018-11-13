@@ -24,26 +24,26 @@ public class AppTest
      *
      * @param testName name of the test case
      */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+//    public AppTest( String testName )
+//    {
+//      //  super( testName );
+//    }
+//
+//    /**
+//     * @return the suite of tests being tested
+//     */
+//    public static Test suite()
+//    {
+//       // return new TestSuite( AppTest.class );
+//    }
+//
+//    /**
+//     * Rigourous Test :-)
+//     */
+//    public void testApp()
+//    {
+//      //  assertTrue( true );
+//    }
     
 //    public static void main(String [] args) {
 //    	String[] queries = {"A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10"};

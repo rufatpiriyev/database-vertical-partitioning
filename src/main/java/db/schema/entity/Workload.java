@@ -54,6 +54,21 @@ public class Workload {
         q.setSelectivity(1.0);
         queries.add(q);
     }
+    
+    
+    /**
+     * Add a project-only query to the workload.
+     * @param name the name of the query
+     * @param weight the relative occurrence or importance of the query within the workload
+     * @param projections the set of attributes projected by the query
+     */
+    public void addProjectionQueryR(String name, int weight, int[] projections) {
+        Query q = new Query(name, weight);
+        q.setProjections(attributes.size(), projections);
+        q.setSelectivity(1.0);
+        queries.add(q);
+    }
+    
 
     /**
      * Method for adding a query with projected columns and selections as well to the workload.

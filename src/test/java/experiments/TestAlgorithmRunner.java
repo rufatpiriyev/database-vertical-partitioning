@@ -12,8 +12,8 @@ public class TestAlgorithmRunner {
      */
     @Test
     public void runTPCH_all() {
-        AlgorithmRunner algorithmRunner = new AlgorithmRunner();
-        algorithmRunner.runTPC_H_All();
-        System.out.println(AlgorithmResults.exportResults(algorithmRunner.results)) ;
+        //AlgorithmRunner algorithmRunner = new AlgorithmRunner();
+        //algorithmRunner.runTPC_H_All();
+        //System.out.println(AlgorithmResults.exportResults(algorithmRunner.results)) ;
     }
 }

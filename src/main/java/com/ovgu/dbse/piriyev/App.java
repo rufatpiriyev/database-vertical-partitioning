@@ -9,7 +9,12 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ovgu.dbse.piriyev.resources.CostModelResource;
+import com.ovgu.dbse.piriyev.resources.EvaluationResultFirstCase;
+import com.ovgu.dbse.piriyev.resources.ExistingQueries;
 import com.ovgu.dbse.piriyev.resources.PartitionResource;
+import com.ovgu.dbse.piriyev.resources.TableResource;
+import com.ovgu.dbse.piriyev.dao.TestResourcePostTest;
 import com.wordnik.swagger.config.ConfigFactory;
 import com.wordnik.swagger.config.ScannerFactory;
 import com.wordnik.swagger.config.SwaggerConfig;
@@ -69,6 +74,11 @@ public class App extends Application<PartitionConfiguration>
     	// init Swagger resources
     	initSwagger(configuration, environment);
         environment.jersey().register(new PartitionResource());
+    	environment.jersey().register(new TableResource());
+    	environment.jersey().register(new CostModelResource());
+    	environment.jersey().register(new ExistingQueries());
+    	environment.jersey().register(new EvaluationResultFirstCase());
+    	
     }
 
     public static void main( String[] args ) throws Exception {

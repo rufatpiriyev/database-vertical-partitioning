@@ -13,7 +13,7 @@ public class Algorithm {
 	
     private final String algorithmName;
     
-    private  HashMap<String, HashMap<AbstractAlgorithm.Algo, Double>> responseTime;
+    private  double responseTime;
     Map<Integer, int[]> partitions;
     private HashMap<String, HashMap<AbstractAlgorithm.Algo, TIntObjectHashMap<TIntHashSet>>> bestSolutions;
     private List<Attribute> attributes;
@@ -24,7 +24,7 @@ public class Algorithm {
 	        this.algorithmName = algorithmName;
 	}
 	
-	public void setResponseTime( HashMap<String, HashMap<AbstractAlgorithm.Algo, Double>> responseTime) {
+	public void setResponseTime( double responseTime) {
     	this.responseTime = responseTime;
     }
     
@@ -36,7 +36,7 @@ public class Algorithm {
     	this.bestSolutions = bestSolutions;
     }
     
-    public HashMap<String, HashMap<AbstractAlgorithm.Algo, Double>> getResponseTime() {
+    public double getResponseTime() {
         return this.responseTime;
     }
     

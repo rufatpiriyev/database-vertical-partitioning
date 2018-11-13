@@ -53,7 +53,7 @@
               <transformers>
                 <transformer />
                 <transformer>
-                  <mainClass>experiments.AlgorithmRunner</mainClass>
+                  <mainClass>com.ovgu.dbse.piriyev.App</mainClass>
                 </transformer>
               </transformers>
             </configuration>
