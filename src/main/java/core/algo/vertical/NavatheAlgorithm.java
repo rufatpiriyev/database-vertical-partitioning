@@ -7,6 +7,7 @@ import db.schema.BenchmarkTables;
 import db.schema.entity.Table;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -29,7 +30,7 @@ public class NavatheAlgorithm extends AbstractPartitioningAlgorithm {
 	}
 	
 	@Override
-	public void doPartition() {
+	public List<Integer> doPartition() {
         if (w.queryCount > 0) {
             int[] ordering = clusterMatrix(getAffinityMatrix());
             BruteForce bf = new BruteForce();
@@ -39,6 +40,7 @@ public class NavatheAlgorithm extends AbstractPartitioningAlgorithm {
         } else {
             partitioning = new int[w.attributeCount];
         }
+		return null;
 	}
 	
 	

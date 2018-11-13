@@ -11,6 +11,7 @@ import gnu.trove.set.hash.TIntHashSet;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class O2P extends NavatheAlgorithm {
 	}
 
 	@Override
-	public void doPartition() {
+	public List<Integer> doPartition() {
 
 		int[] ordering = clusterMatrix(getAffinityMatrix());
 		Enumerate e = null;
@@ -63,6 +64,7 @@ public class O2P extends NavatheAlgorithm {
         //--- Hack: fix empty partitions bug ---//
 		partitioning = PartitioningUtils.consecutivePartitionIds(e.enumerate(ordering));
 		profiler.numberOfIterations = e.getNumberOfIterations();
+		return null;
 	}
 	
 	public void setMode(MODE mode) {

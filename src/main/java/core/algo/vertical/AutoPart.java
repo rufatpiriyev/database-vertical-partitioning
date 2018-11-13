@@ -9,6 +9,7 @@ import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Implementation of the AutoPart vertical partitioning algorithm from S.
@@ -34,7 +35,7 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 	}
 
 	@Override
-	public void doPartition() {
+	public List<Integer> doPartition() {
 
         TIntHashSet unReferenced = WorkloadUtils.getNonReferencedAttributes(w.usageMatrix);
         HashSet<TIntHashSet> unRefHashSet = new HashSet<TIntHashSet>();
@@ -291,6 +292,7 @@ public class AutoPart extends AbstractPartitionsAlgorithm {
 
         partitions = newPartitions;
         bestSolutions = newBestSolutions;
+		return null;
 	}
 
 	/**

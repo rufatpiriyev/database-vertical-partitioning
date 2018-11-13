@@ -1,5 +1,7 @@
 package core.algo.vertical;
 
+import java.util.List;
+
 import core.metrics.PartitioningCostCalculator;
 import core.utils.ArrayUtils;
 import core.utils.EnumUtils.Enumerate;
@@ -17,7 +19,7 @@ public class Optimal extends AbstractPartitioningAlgorithm {
 	}
 	
 	@Override
-	public void doPartition() {
+	public List<Integer> doPartition() {
 		BellNumber bn = new BellNumber();
 
         /***** Remove unreferenced attributes to speed-up the search. *****/
@@ -44,6 +46,7 @@ public class Optimal extends AbstractPartitioningAlgorithm {
         partitioning = PartitioningUtils.consecutivePartitionIds(partitioning);
 
 		profiler.numberOfIterations = bn.getNumberOfIterations();
+		return null;
 	}
 	
 	

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static core.algo.vertical.AbstractAlgorithm.Algo.*;
@@ -475,59 +476,90 @@ public class AlgorithmRunner {
         //System.out.println(output);
     	
     	
-    	//Define Table: List of attributes, names, primary key, table name, scale factor, number of rows
-    	List<Attribute> attr = new ArrayList<>();
-    	Attribute a = new Attribute("A", AttributeType.Integer());
-		a.primaryKey = true;
-		attr.add(a);
-		Attribute b = new Attribute("B", AttributeType.Boolean());
-		b.primaryKey = false;
-		attr.add(b);
-		Attribute c = new Attribute("C", AttributeType.Integer());
-		c.primaryKey = false;
-		attr.add(c);
-    	Table t = new Table("DummyTable", TableType.Default(), attr);
-
+//    	//Define Table: List of attributes, names, primary key, table name, scale factor, number of rows
+//    	List<Attribute> attr = new ArrayList<>();
+//    	Attribute a = new Attribute("A", AttributeType.Integer());
+//		a.primaryKey = true;
+//		attr.add(a);
+//		Attribute b = new Attribute("B", AttributeType.Boolean());
+//		b.primaryKey = false;
+//		attr.add(b);
+//		Attribute c = new Attribute("C", AttributeType.Integer());
+//		c.primaryKey = false;
+//		attr.add(c);
+//    	Table t = new Table("DummyTable", TableType.Default(), attr);
+//
+//    	
+//    	//Define Queries (and assign to both table and algorithm runner): Names, and type of each query
+//    	String[] queries = {"Q1","Q3"};
+//    	Workload wkld = new Workload(attr, 60000, "DummyTable");
+//    	wkld.addProjectionQuery("Q1", 1, 1);
+//    	wkld.addProjectionQuery("Q3", 1, 2);
+//    	t.workload = wkld; //I think that here we also get a chance of changing the cost model
+//
+//
+//    	//Define cost model (and complete configuration for the algorithm)
+//    	AbstractAlgorithm.HDDAlgorithmConfig conf = new AbstractAlgorithm.HDDAlgorithmConfig(t);
+//    	//conf.setW(wkld.getSimplifiedWorkload());//Here we are choosing the cost model, implicitly
+//
+//    	//Define: Partitioning Algorithms
+//    	Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
+//    	AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, O2P, DREAM};
+//    	for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
+//            algos_sel.add(algo);
+//        }
+//    	
+//    	//DEfine algorithm runner (same for all)
+//        AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, conf);
+//        
+//        //Run
+//        algoRunner.runAlgorithms(conf, null);
+//
+//        //algoRunner.runTPC_H_LineItem(true);
+//        
+//        //Get results....
+//        AbstractAlgorithm.AlgorithmConfig config = algoRunner.getConfiguration();
+//        
+//        Table tab = config.getTable();
+//        List<Attribute> attributes = tab.attributes;	
+//        
+//        for(Attribute attrib: attributes) {
+//        	System.out.println(attrib.name);
+//        }
+//        
+//        String output = AlgorithmResults.exportResults(algoRunner.results);
+//        System.out.println(output);
     	
-    	//Define Queries (and assign to both table and algorithm runner): Names, and type of each query
-    	String[] queries = {"Q1","Q3"};
-    	Workload wkld = new Workload(attr, 60000, "DummyTable");
-    	wkld.addProjectionQuery("Q1", 1, 1);
-    	wkld.addProjectionQuery("Q3", 1, 2);
-    	t.workload = wkld; //I think that here we also get a chance of changing the cost model
-
-
-    	//Define cost model (and complete configuration for the algorithm)
-    	AbstractAlgorithm.HDDAlgorithmConfig conf = new AbstractAlgorithm.HDDAlgorithmConfig(t);
-    	//conf.setW(wkld.getSimplifiedWorkload());//Here we are choosing the cost model, implicitly
-
-    	//Define: Partitioning Algorithms
-    	Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
-    	AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, O2P, DREAM};
-    	for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
-            algos_sel.add(algo);
-        }
     	
-    	//DEfine algorithm runner (same for all)
-        AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, conf);
-        
-        //Run
-        algoRunner.runAlgorithms(conf, null);
-
-        //algoRunner.runTPC_H_LineItem(true);
-        
-        //Get results....
-        AbstractAlgorithm.AlgorithmConfig config = algoRunner.getConfiguration();
-        
-        Table tab = config.getTable();
-        List<Attribute> attributes = tab.attributes;	
-        
-        for(Attribute attrib: attributes) {
-        	System.out.println(attrib.name);
-        }
-        
-        String output = AlgorithmResults.exportResults(algoRunner.results);
-        System.out.println(output);
+//      String[] queries = {"Q1", "Q3", "Q4", "Q5"};
+//      Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
+////      AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
+//      //AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
+//      AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {NAVATHE};
+//      for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
+//          algos_sel.add(algo);
+//      }
+//      AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.tpchLineitem(new BenchmarkTables.BenchmarkConfig(null, 10, TableType.Default()))));
+//      algoRunner.runTPC_H_LineItem(true);
+//      String output = AlgorithmResults.exportResults(algoRunner.results);
+//
+//      System.out.println(output);
+  	
+  	Map<Integer,String> actionMap = AbstractAlgorithm.getActionMap();
+  	List<String> actions = new ArrayList<>();
+  	actions.add("[2,3]");
+  	actions.add("[8,9]");
+  	actions.add("[4,7]");
+  	actions.add("[4,7,9]");
+  	actions.add("[11,12]");
+  	actions.add("[4,7,8,9]");
+  	
+  	List<Integer>   actionsInteger =   AbstractAlgorithm.getActions(actions);
+  	for(Integer action: actionsInteger ) {
+  		System.out.println(action);
+  		
+  	}
+    	
         
         
         

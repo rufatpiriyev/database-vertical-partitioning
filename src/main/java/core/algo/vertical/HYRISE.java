@@ -33,7 +33,7 @@ public class HYRISE extends AbstractPartitioningAlgorithm {
 		type = Algo.HYRISE;
 	}
 	
-	public void doPartition() {
+	public List<Integer> doPartition() {
 
         /* HACK: if usageMatrix is all 1s, than no need to execute the algorithm: */
         int sum = 0;
@@ -45,7 +45,7 @@ public class HYRISE extends AbstractPartitioningAlgorithm {
 
         if (sum == w.queryCount * w.attributeCount) {
             partitioning = new int[w.attributeCount];
-            return;
+            return null;
         }
 
 		//ArrayUtils.printArray(usageMatrix, "Usage Matrix", "Query", null);
@@ -95,6 +95,7 @@ public class HYRISE extends AbstractPartitioningAlgorithm {
 		// Combine sub-Layouts
 		List<int[][]> mergedBestLayouts = mergeAcrossLayouts(bestLayouts, bestLayouts.size());
 		partitioning = PartitioningUtils.getPartitioning(mergedBestLayouts);
+		return null;
 	}
 	
 	private int coAccessCount(int[][] usageM, int a, int b){

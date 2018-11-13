@@ -1,5 +1,7 @@
 package core.algo.vertical;
 
+import java.util.List;
+
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.hash.TIntHashSet;
 
@@ -17,7 +19,7 @@ public class DreamPartitioner extends AbstractPartitionsAlgorithm {
     }
 
     @Override
-    public void doPartition() {
+    public List<Integer> doPartition() {
         
         bestSolutions = new TIntObjectHashMap<TIntHashSet>(w.queryCount);
         
@@ -38,5 +40,6 @@ public class DreamPartitioner extends AbstractPartitionsAlgorithm {
         }
 
         workload.setBestSolutions(bestSolutions);
+		return null;
     }
 }

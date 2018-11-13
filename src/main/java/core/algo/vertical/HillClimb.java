@@ -4,6 +4,7 @@ import core.utils.PartitioningUtils;
 import gnu.trove.set.hash.TIntHashSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,8 +35,23 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 //		costTable = new HashMap<String, Double>();
 	}
 	
+	public static List<String> twoDArrayToList(int[][] twoDArray) {
+	    List<String> list = new ArrayList<String>();
+	    for (int[] array : twoDArray) {
+	        Arrays.sort(array);
+	        list.add(Arrays.toString(array));
+	    }
+	    return list;
+	}
+	
+	
 	@Override
-	public void doPartition() {
+	
+	
+	
+	
+	
+	public List<Integer> doPartition() {
 //		int[][] allGroups = getSetOfGroups(usageMatrix);
 //		
 //		for (int[] group : allGroups) {			
@@ -46,13 +62,21 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 		for(int i = 0; i < w.attributeCount; i++) {
 			cand[i][0] = i;
 		}
+		
+		
 		double candCost = getCandCost(cand);
 		double minCost;
 		List<int[][]> candList = new ArrayList<int[][]>();
 		int[][] R;
 		int[] s;
+		int iterCount = 0;
+		
+		List<String> actionSteps = new ArrayList<String>();
+		
 		do {
+			System.out.println("Iteration:" + iterCount);
 			R = cand;
+			List<String> lstCandidate1 = twoDArrayToList(cand);
 			minCost = candCost;
 			candList.clear();
 			for (int i = 0; i < R.length; i++) {
@@ -73,11 +97,23 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 			}
 			if(!candList.isEmpty()) {
 				cand = getLowerCostCand(candList);
+				List<String> lstCandidate2 = twoDArrayToList(cand);
+				System.out.println("Candidate lenght:" + cand.length);
 				candCost = getCandCost(cand);
+				lstCandidate2.removeAll(lstCandidate1);
+				actionSteps.add(lstCandidate2.get(0));
+				
 			}
+			
+			iterCount++;
 		} while (candCost < minCost);
 
 		partitioning = PartitioningUtils.getPartitioning(R);
+		
+		List<Integer> actions =  AbstractAlgorithm.getActions(actionSteps);
+		
+		return actions;
+		
 	}
 	
 	private int[][] getLowerCostCand(List<int[][]> candList) {

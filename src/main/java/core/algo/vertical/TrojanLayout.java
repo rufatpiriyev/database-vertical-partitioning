@@ -53,7 +53,7 @@ public class TrojanLayout extends AbstractPartitioningAlgorithm {
 	}
 
     @Override
-	public void doPartition() {
+	public List<Integer> doPartition() {
 
 	  	if (replicationFactor > 1) {
             // do query grouping
@@ -116,6 +116,7 @@ public class TrojanLayout extends AbstractPartitioningAlgorithm {
         if (replicationFactor == 1) {
             partitioning = perReplicaPartitioning[0];
         }
+		return null;
 	}
 
 	/**

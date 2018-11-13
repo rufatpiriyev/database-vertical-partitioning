@@ -103,7 +103,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 	}
 	
 	@Override
-	public void doPartition() {
+	public List<Integer> doPartition() {
 //		int[][] allGroups = getSetOfGroups(usageMatrix);
 //		
 //		for (int[] group : allGroups) {			
@@ -147,6 +147,7 @@ public class HillClimbCL extends AbstractPartitioningAlgorithm {
 		} while (candCost < minCost);
 
 		partitioning = PartitioningUtils.getPartitioning(R);
+		return null;
 	}
 	
 	private int[][] getLowerCostCand(List<int[][]> candList) {
