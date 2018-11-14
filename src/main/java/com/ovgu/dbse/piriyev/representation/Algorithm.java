@@ -17,6 +17,7 @@ public class Algorithm {
     Map<Integer, int[]> partitions;
     private HashMap<String, HashMap<AbstractAlgorithm.Algo, TIntObjectHashMap<TIntHashSet>>> bestSolutions;
     private List<Attribute> attributes;
+    private List<Integer> actionSequence;
     
     
 	
@@ -59,7 +60,19 @@ public class Algorithm {
     public String getAlgorithmName() {
     	return algorithmName;
     }
+    
+    
+    public void setActionSequence(List<Integer> actionSequence){
+    	this.actionSequence = actionSequence;
+    }   
+    
+    public List<Integer> getActionSequence(){
+
+    	return actionSequence;
+    }
 	
+    
+    
 	
 	
 	

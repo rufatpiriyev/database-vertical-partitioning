@@ -139,7 +139,7 @@ public class EvaluationResultFirstCase {
 		
 		
         for(AbstractAlgorithm.Algo algo: algos_sel) {
-          	 Algorithm algorithmResult = new Algorithm(algo.name());
+          	Algorithm algorithmResult = new Algorithm(algo.name());
           	AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, null, confHd !=null?confHd: confMM);
           	algoRunner.runAlgorithms(confHd !=null?confHd: confMM, null);
           	 //AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, (String[])queries.toArray(), new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.randomTable(1, 1)));
@@ -152,11 +152,10 @@ public class EvaluationResultFirstCase {
            algorithmResult.setResponseTime(runtime);
            Map<Integer, int[]> partitions = AlgorithmResults.getPartititons(tableName.toLowerCase(), algo, algoRunner.results);
                algorithmResult.setPartitions(partitions);
-               partition.addAlgorithmResults(algorithmResult);
+               algorithmResult.setActionSequence(AlgorithmResults.getActionSequence(tableName, algo, algoRunner.results));
+               partition.addAlgorithmResults(algorithmResult);       
           }
 		
-		
-
 		return Response.ok(partition).build();
 
 	}

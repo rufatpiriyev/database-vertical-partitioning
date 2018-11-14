@@ -46,11 +46,6 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 	
 	
 	@Override
-	
-	
-	
-	
-	
 	public List<Integer> doPartition() {
 //		int[][] allGroups = getSetOfGroups(usageMatrix);
 //		
@@ -111,6 +106,7 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 		partitioning = PartitioningUtils.getPartitioning(R);
 		
 		List<Integer> actions =  AbstractAlgorithm.getActions(actionSteps);
+		actions.add(120);
 		
 		return actions;
 		

@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -30,6 +31,7 @@ public class AlgorithmResults {
     public HashMap<String, HashMap<AbstractAlgorithm.Algo, TIntObjectHashMap<TIntHashSet>>> bestSolutions;
     /** The runtimes of the algorithms per table and algorithm. */
     public HashMap<String, HashMap<AbstractAlgorithm.Algo, Double>> runTimes;
+    public HashMap<String, HashMap<AbstractAlgorithm.Algo, List<Integer>>> actionSequence;
 
     /**
      * Default constructor that initializes the collections.
@@ -38,6 +40,7 @@ public class AlgorithmResults {
         partitions = new HashMap<String, HashMap<AbstractAlgorithm.Algo, TIntObjectHashMap<TIntHashSet>>>();
         bestSolutions = new HashMap<String, HashMap<AbstractAlgorithm.Algo, TIntObjectHashMap<TIntHashSet>>>();
         runTimes = new HashMap<String, HashMap<AbstractAlgorithm.Algo, Double>>();
+        actionSequence = new HashMap<String, HashMap<AbstractAlgorithm.Algo, List<Integer>>>();
     }
 
     /**
@@ -48,6 +51,7 @@ public class AlgorithmResults {
         partitions.put(tableName, new HashMap<AbstractAlgorithm.Algo, TIntObjectHashMap<TIntHashSet>>());
         bestSolutions.put(tableName, new HashMap<AbstractAlgorithm.Algo, TIntObjectHashMap<TIntHashSet>>());
         runTimes.put(tableName, new HashMap<AbstractAlgorithm.Algo, Double>());
+        actionSequence.put(tableName, new HashMap<AbstractAlgorithm.Algo, List<Integer>>());
     }
 
     /**
@@ -62,6 +66,10 @@ public class AlgorithmResults {
             bestSolutions.get(tableName).put(algorithm.type, ((AbstractPartitionsAlgorithm)algorithm).getBestSolutions());
         }
         runTimes.get(tableName).put(algorithm.type, runTime);
+        actionSequence.get(tableName).put(algorithm.type, algorithm.actionSequence);
+        
+        System.out.println(algorithm.actionSequence);
+       
     }
 
     /**
@@ -140,6 +148,12 @@ public class AlgorithmResults {
      */
     public static int firstIntToken(String s) {
         return Integer.parseInt(s.substring(0, s.indexOf(" ")));
+    }
+    
+    
+    public static List<Integer> getActionSequence(String tableName, Algo algo, AlgorithmResults results){
+        //return null;
+    	return  results.actionSequence.get(tableName.toLowerCase()).get(algo);
     }
     
     

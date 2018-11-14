@@ -34,6 +34,8 @@ public abstract class AbstractAlgorithm {
 	protected Timer timer;
 
     protected AlgorithmConfig config;
+    
+    public List<Integer> actionSequence;
 
 	public AbstractAlgorithm(AlgorithmConfig config) {
 
@@ -51,6 +53,7 @@ public abstract class AbstractAlgorithm {
 	}
 
 	public void partition() {
+		List<Integer> actionSequence = new ArrayList<>();
 		timer.start();
         if (w.queryCount == 0) {
             int[] partitioning = new int[w.attributeCount];
@@ -61,10 +64,11 @@ public abstract class AbstractAlgorithm {
                 ((AbstractPartitionsAlgorithm)this).bestSolutions = new TIntObjectHashMap<TIntHashSet>();
             }
         } else {
-		    doPartition();
+		   this.actionSequence =  doPartition();
         }
 		timer.stop();
 		t.partitions = getPartitions();
+		//t.actionSequence = actionSequence;
 	}
 
 	public abstract List<Integer> doPartition();
@@ -101,6 +105,7 @@ public abstract class AbstractAlgorithm {
 		protected Table table;
         public Workload.SimplifiedWorkload w;
         public CostModel.CMType type;
+        public List<Integer> actionSequence;
 
 		public AlgorithmConfig(Table table) {
 			this.table = table;

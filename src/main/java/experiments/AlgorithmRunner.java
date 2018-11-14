@@ -531,34 +531,35 @@ public class AlgorithmRunner {
 //        System.out.println(output);
     	
     	
-//      String[] queries = {"Q1", "Q3", "Q4", "Q5"};
-//      Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
-////      AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART, HILLCLIMB, HYRISE};
-//      //AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {TROJAN};
-//      AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {NAVATHE};
-//      for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
-//          algos_sel.add(algo);
-//      }
-//      AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.tpchLineitem(new BenchmarkTables.BenchmarkConfig(null, 10, TableType.Default()))));
-//      algoRunner.runTPC_H_LineItem(true);
-//      String output = AlgorithmResults.exportResults(algoRunner.results);
-//
-//      System.out.println(output);
+      String[] queries = {"Q1","Q3","Q4","Q5"};
+      Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
+      AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = {AUTOPART};
+      for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
+          algos_sel.add(algo);
+      }
+      AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, queries, 
+    		  new AbstractAlgorithm.HDDAlgorithmConfig(
+    				  BenchmarkTables.tpchLineitem(new BenchmarkTables.BenchmarkConfig(null, 10, 
+    						  TableType.Default()))));
+      algoRunner.runTPC_H_LineItem(true);
+      String output = AlgorithmResults.exportResults(algoRunner.results);
+
+      System.out.println(output);
   	
-  	Map<Integer,String> actionMap = AbstractAlgorithm.getActionMap();
-  	List<String> actions = new ArrayList<>();
-  	actions.add("[2,3]");
-  	actions.add("[8,9]");
-  	actions.add("[4,7]");
-  	actions.add("[4,7,9]");
-  	actions.add("[11,12]");
-  	actions.add("[4,7,8,9]");
-  	
-  	List<Integer>   actionsInteger =   AbstractAlgorithm.getActions(actions);
-  	for(Integer action: actionsInteger ) {
-  		System.out.println(action);
-  		
-  	}
+//  	Map<Integer,String> actionMap = AbstractAlgorithm.getActionMap();
+//  	List<String> actions = new ArrayList<>();
+//  	actions.add("[2,3]");
+//  	actions.add("[8,9]");
+//  	actions.add("[4,7]");
+//  	actions.add("[4,7,9]");
+//  	actions.add("[11,12]");
+//  	actions.add("[4,7,8,9]");
+//  	
+//  	List<Integer>   actionsInteger =   AbstractAlgorithm.getActions(actions);
+//  	for(Integer action: actionsInteger ) {
+//  		System.out.println(action);
+//  		
+//  	}
     	
         
         
