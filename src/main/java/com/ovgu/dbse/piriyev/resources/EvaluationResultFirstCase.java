@@ -42,7 +42,7 @@ public class EvaluationResultFirstCase {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Metered(name = "getPartitions-meter")
 	@Timed(name = "getPartitions-timer")
-	@ApiOperation(value = "Get parttions given inputs", notes = "Please describe me.", response = ExistingQueries.class) 																													// structured.
+	@ApiOperation(value = "Get parttions given inputs", notes = "Please describe me.", response = ExistingQueries.class) // structured.
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = ExistingQueries.class),
 			@ApiResponse(code = 404, message = "Input error."),
 			@ApiResponse(code = 500, message = "Internal server error") })
@@ -61,103 +61,143 @@ public class EvaluationResultFirstCase {
 
 		Table table = null;
 		Partition partition = new Partition(Arrays.asList(algorithms));
+
+		Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
+		
+		List<Query> tableQueries = new ArrayList<>();
+		List<String> queryExisted;
+		AlgorithmRunner algoRunner;
+		String[] Queries;
+
+		// string to enum array set size
+		AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = new AbstractAlgorithm.Algo[algorithms.split(",").length];
+
+		int i = 0;
+
+		// strings to enum array
+		for (String algorithm : algorithms.split(",")) {
+			ALL_ALGOS_SEL[i] = AbstractAlgorithm.Algo.valueOf(algorithm);
+			i++;
+		}
+
+		// enum set to pass to AlgorithmRunner
+		for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
+			algos_sel.add(algo);
+		}
+
 		switch (tableName) {
 		case "ALL":
 			table = BenchmarkTables.tpchAll(benchmarkConf);
+			
 			break;
 		case "CUSTOMER":
-			table = BenchmarkTables.tpchCustomer(benchmarkConf);
+			table = BenchmarkTables.tpchCustomer(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
+			tableQueries = table.workload.queries;
+			Queries = getQueries(queries, tableQueries);
+			
+			
+			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
+					new AbstractAlgorithm.HDDAlgorithmConfig(table));
+			algoRunner.runTPC_H_Customer();			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
+			partition.tableAttributes = table.attributes;
 			break;
 		case "LINEITEM":
-			table = BenchmarkTables.tpchLineitem(benchmarkConf);
+			table = BenchmarkTables.tpchLineitem(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
+			tableQueries = table.workload.queries;
+			Queries = getQueries(queries, tableQueries);
+			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
+					new AbstractAlgorithm.HDDAlgorithmConfig(table));
+			algoRunner.runTPC_H_LineItem(true);			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
 			break;
 		case "PART":
-			table = BenchmarkTables.tpchPart(benchmarkConf);
+			table = BenchmarkTables.tpchPart(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
+			tableQueries = table.workload.queries;
+			queryExisted = new ArrayList<>();
+			Queries = getQueries(queries, tableQueries);
+			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
+					new AbstractAlgorithm.HDDAlgorithmConfig(table));
+			
+			
+			algoRunner.runTPC_H_Part();			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
 			break;
+		
 		case "SUPPLIER":
-			table = BenchmarkTables.tpchSupplier(benchmarkConf);
+			
+			table = BenchmarkTables.tpchSupplier(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
+			tableQueries = table.workload.queries;
+			Queries = getQueries(queries, tableQueries);
+			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
+					new AbstractAlgorithm.HDDAlgorithmConfig(table));
+			algoRunner.runTPC_H_Supplier();			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
 			break;
 		case "PARTSUPP":
-			table = BenchmarkTables.tpchPartSupp(benchmarkConf);
+			table = BenchmarkTables.tpchPartSupp(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
+			tableQueries = table.workload.queries;
+			Queries = getQueries(queries, tableQueries);
+			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
+					new AbstractAlgorithm.HDDAlgorithmConfig(table));
+			algoRunner.runTPC_H_PartSupp();			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
 			break;
 		case "ORDERS":
-			table = BenchmarkTables.tpchOrders(benchmarkConf);
+			table = BenchmarkTables.tpchOrders(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
+			tableQueries = table.workload.queries;
+			Queries = getQueries(queries, tableQueries);
+			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
+					new AbstractAlgorithm.HDDAlgorithmConfig(table));
+			algoRunner.runTPC_H_Orders();			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
 			break;
 		case "NATION":
-			table = BenchmarkTables.tpchNation(benchmarkConf);
+			table = BenchmarkTables.tpchNation(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
+			tableQueries = table.workload.queries;
+			Queries = getQueries(queries, tableQueries);
+			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
+					new AbstractAlgorithm.HDDAlgorithmConfig(table));
+			algoRunner.runTPC_H_Nation();			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
 			break;
 		case "REGION":
-			table = BenchmarkTables.tpchRegion(benchmarkConf);
+			table = BenchmarkTables.tpchRegion(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
+			tableQueries = table.workload.queries;
+			Queries = getQueries(queries, tableQueries);
+			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
+					new AbstractAlgorithm.HDDAlgorithmConfig(table));
+			algoRunner.runTPC_H_Region();			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());			
 			break;
 		default:
 			break;
 		}
-
-		switch (costModel) {
-		case "HDDCostModel":
-			confHd = new AbstractAlgorithm.HDDAlgorithmConfig(table);
-
-			break;
-		case "HDDSelectivityCostModel":
-			// will be implemented later
-			// conf = new AbstractAlgorithm.HDDAlgorithmConfig(table,);
-			break;
-		case "MMCostModel":
-			confMM = new AbstractAlgorithm.MMAlgorithmConfig(table);
-			break;
-		}
-
-		List<String> queryNames = new ArrayList<>();
-		List<Query> queryExisted = new ArrayList<>();
-
-		for (String strQueryName : queries.split(",")) {
-			for (Query q : table.workload.queries) {
-				if (strQueryName.equals(q.getName())) {
-					queryExisted.add(q);
-					break;
-				}
-			}
-		}
-		
-		table.workload.queries = queryExisted;
-		
-		
-		Set<AbstractAlgorithm.Algo> algos_sel = new HashSet<AbstractAlgorithm.Algo>();
-		
-		AbstractAlgorithm.Algo[] ALL_ALGOS_SEL = new AbstractAlgorithm.Algo[algorithms.split(",").length];
-    	
-    	int i = 0;
-    	for(String algorithm: algorithms.split(",")) {
-    		ALL_ALGOS_SEL[i] = AbstractAlgorithm.Algo.valueOf(algorithm);
-    		i++;
-    	}
-    	
-
-        for (AbstractAlgorithm.Algo algo : ALL_ALGOS_SEL) {
-            algos_sel.add(algo);
-        }
-		
-		
-        for(AbstractAlgorithm.Algo algo: algos_sel) {
-          	Algorithm algorithmResult = new Algorithm(algo.name());
-          	AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, null, confHd !=null?confHd: confMM);
-          	algoRunner.runAlgorithms(confHd !=null?confHd: confMM, null);
-          	 //AlgorithmRunner algoRunner = new AlgorithmRunner(algos_sel, 10, (String[])queries.toArray(), new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.randomTable(1, 1)));
-          	 //algoRunner.runTPC_H_All();
-          	 //AbstractAlgorithm.AlgorithmConfig config = algoRunner.getConfiguration();
-               //Table tab = config.getTable();
-              // List<Attribute> attributes = tab.getAttributes();
-             //  algorithmResult.setTableAttributes(attributes);
-           double  runtime = AlgorithmResults.getBestRuntime(tableName.toLowerCase(), algo, algoRunner.results);
-           algorithmResult.setResponseTime(runtime);
-           Map<Integer, int[]> partitions = AlgorithmResults.getPartititons(tableName.toLowerCase(), algo, algoRunner.results);
-               algorithmResult.setPartitions(partitions);
-               algorithmResult.setActionSequence(AlgorithmResults.getActionSequence(tableName, algo, algoRunner.results));
-               partition.addAlgorithmResults(algorithmResult);       
-          }
 		
 		return Response.ok(partition).build();
 
 	}
+	
+	public static String[] getQueries(String queries, List<Query> tableQueries) {
+		List<String> queryExisted = new ArrayList<>();
+		
+		if (queries.equals("")) {
+			for (Query q : tableQueries) {
+				queryExisted.add(q.getName());
+			}
+		} else {
+			for (String strQueryName : queries.split(",")) {
+				for (Query q : tableQueries) {
+					if (strQueryName.equals(q.getName())) {
+						queryExisted.add(strQueryName);
+						break;
+					}
+				}
+			}
+		}
+		return queryExisted.toArray(new String[0]);
+		
+	}
+	
 
 }

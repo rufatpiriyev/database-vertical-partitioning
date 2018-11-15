@@ -11,12 +11,16 @@ import gnu.trove.set.hash.TIntHashSet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+
+import com.ovgu.dbse.piriyev.representation.Algorithm;
+import com.ovgu.dbse.piriyev.representation.Partition;
 
 /**
  * A collection of the results of partitioning algorithms and some methods for serializing the results.
@@ -133,6 +137,11 @@ public class AlgorithmResults {
                         sb.append(ArrayUtils.arrayToString(partitionSelectionPlan, " ")).append('\n');
                     }
                 }
+                
+                List<Integer> actionSequence = getActionSequence(tableName, algo, results);
+                //sb.append(ArrayUtils.arrayToString(( (ArrayList<Integer>)actionSequence).toArray(), " ")).append('\n'));
+                
+                
             }
 
             sb.append('\n'); // print new line after each table
@@ -140,6 +149,52 @@ public class AlgorithmResults {
 
         return sb.toString();
     }
+    
+    
+    
+    /**
+     * Method for exporting the resulting partitions, best solutions (in case of overlaps)
+     * and runtimes for each table-algorithm pair.
+     * @param results The container of the necessary data.
+     * @return The string representation of the results.
+     */
+    public static Partition exportResults2(AlgorithmResults results, String tableName) {
+    	
+    	
+        TreeSet<AbstractAlgorithm.Algo> algos = new TreeSet<AbstractAlgorithm.Algo>(
+                  results.partitions.get(tableName).keySet() );
+        
+        
+        
+        List<String> algorithmNames = new ArrayList<>();
+        
+        for (AbstractAlgorithm.Algo algo : algos) {
+        	
+        	algorithmNames.add(algo.name());
+        }
+    	
+    	Partition resultPartititon = new Partition(algorithmNames);
+    	
+    	
+    	for (AbstractAlgorithm.Algo algo : algos) {
+    		Algorithm algorithm = new Algorithm(algo.name());
+    		double  runtime = results.runTimes.get(tableName).get(algo);
+    		algorithm.setResponseTime(runtime);
+    		int partitionCount = results.partitions.get(tableName).get(algo).size();
+            Map<Integer, int[]> partitions = 
+            		AlgorithmResults.getPartititons(tableName.toLowerCase(), algo, results);
+            algorithm.setPartitions(partitions);
+            List<Integer> actionSequence = results.getActionSequence(tableName, algo, results);
+            algorithm.setActionSequence(actionSequence);
+            
+            resultPartititon.addAlgorithmResults(algorithm);
+   
+    	}
+        return resultPartititon;
+    }
+    
+    
+    
 
     /**
      * Method for getting the first integer from a line possibly containing comments at the end as well.
@@ -250,7 +305,6 @@ public class AlgorithmResults {
                     if (algo.equals(AbstractAlgorithm.Algo.AUTOPART) || algo.equals(AbstractAlgorithm.Algo.DREAM) ) {
                         /* Read best solutions. */
                         TIntObjectHashMap<TIntHashSet> bestSolutions = new TIntObjectHashMap<TIntHashSet>();
-
                         int queryCount = firstIntToken(reader.readLine());
                         for (int q = 0; q < queryCount; q++) {
                             TIntHashSet partitionSelectionPlan = new TIntHashSet();
