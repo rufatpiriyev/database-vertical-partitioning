@@ -526,6 +526,47 @@ public class BenchmarkTables {
 		return t;
 	}
 	
+	public static Table randomTable2(String sTableAttributes, String workloadMatrix, int numberOfRows){
+		String [] aTableAttributes = sTableAttributes.replace(" ", "").replace("[", "").replace("]","").split(",");
+		int numAttributes = aTableAttributes.length;
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		int i = 0;
+		for(String aAttribute: aTableAttributes) {
+			
+			switch (aAttribute) {
+			case "1":
+				attributes.add(new Attribute("attribute_"+i, AttributeType.Boolean()));
+				break;
+			case "2":
+				attributes.add(new Attribute("attribute_"+i, AttributeType.SmallInt()));
+				break;
+			case "4":
+				attributes.add(new Attribute("attribute_"+i, AttributeType.Integer()));
+				break;
+			case "8":
+				attributes.add(new Attribute("attribute_"+i, AttributeType.BigInt()));
+				break;	
+			case "44":
+				attributes.add(new Attribute("attribute_"+i, AttributeType.CharacterVarying(44)));
+				break;	
+			case "100":
+				attributes.add(new Attribute("attribute_"+i, AttributeType.CharacterVarying(100)));
+				break;	
+			default:
+				break;
+			}
+			i++;
+		}
+
+		Table t = new Table("random_"+numAttributes, DataConfig.tableType, attributes);
+        t.pk = "attribute_0";
+		t.workload = BenchmarkWorkloads.randomWorkload2(attributes, workloadMatrix, numberOfRows);
+		return t;
+	}
+	
+	
+	
+	
 	/**
 	 * Method for creating a table from an existing one using only a subset of its attributes
 	 * and also setting a workload that is only a subset of its workload.

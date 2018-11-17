@@ -5,8 +5,12 @@ import db.schema.entity.Query;
 import db.schema.entity.Range;
 import db.schema.entity.Workload;
 import db.schema.utils.zipf.ZipfDistributionFromGrayEtAl;
+import scala.Array;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class BenchmarkWorkloads {
 
@@ -294,6 +298,35 @@ public class BenchmarkWorkloads {
 		return w;
 	}
 	
+	
+	public static Workload randomWorkload2(List<Attribute> attributes, String workloadMatrix, int rowNumber){
+		String sWorkloadMatrix = workloadMatrix.replace(" ","").replace("],", "],\n").
+												replace("[[", "[").
+												replace("]]", "]").replace("],", "]");
+		
+		Workload w = new Workload(attributes, rowNumber, "RANDOM");
+		
+		String [] matrix  = sWorkloadMatrix.split("\n");
+		
+		
+		for(String row: matrix) {
+			int [] a = Arrays.copyOfRange(
+					StringArrayToIntArray(row.replace("]", "").replace("[", "").split(",")), 0, 5);
+			//System.out.println(a[0]);
+		}
+		
+		int i = 0;
+		for(String row: matrix) {
+			int [] attributesExisted = Arrays.copyOfRange(
+					StringArrayToIntArray(row.replace("]", "").replace("[", "").split(",")), 0, 5);
+			//System.out.println(a[0]);
+			int [] atrributesPositions = returnPositionsInArray(attributesExisted);
+			w.addProjectionQuery("R" + i, 1, atrributesPositions);
+		}		
+		return w;
+	}
+	
+	
 	public static Workload partialWorkload(Workload workload, int numQueries){
 		Workload w = new Workload(workload.attributes, workload.getNumberOfRows(), workload.tableName);
 		w.addProjectionQueries(workload.queries.subList(0, numQueries));
@@ -312,4 +345,23 @@ public class BenchmarkWorkloads {
 		w.addProjectionQueries(queries);
 		return w;
 	}
+	
+	public static int[] StringArrayToIntArray(String[] s)
+	{
+	    return Stream.of(s).mapToInt(Integer::parseInt).toArray();
+	}
+	
+	
+	public static int[] returnPositionsInArray(int [] array) {
+		List<Integer> arrayList = new ArrayList<>();
+		for(int i = 0; i< array.length; i++) {
+			if(array[i] == 1) {
+				arrayList.add(i);
+			}
+		}
+		return arrayList.stream().mapToInt(i->i).toArray();
+	}
+	
+	
+	
 }

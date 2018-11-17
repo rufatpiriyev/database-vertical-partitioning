@@ -110,6 +110,7 @@ public class EvaluationResultFirstCase {
 					new AbstractAlgorithm.HDDAlgorithmConfig(table));
 			algoRunner.runTPC_H_LineItem(true);			
 			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
+			partition.tableAttributes = table.attributes;
 			break;
 		case "PART":
 			table = BenchmarkTables.tpchPart(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
@@ -118,10 +119,9 @@ public class EvaluationResultFirstCase {
 			Queries = getQueries(queries, tableQueries);
 			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
 					new AbstractAlgorithm.HDDAlgorithmConfig(table));
-			
-			
 			algoRunner.runTPC_H_Part();			
 			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
+			partition.tableAttributes = table.attributes;
 			break;
 		
 		case "SUPPLIER":
@@ -133,6 +133,7 @@ public class EvaluationResultFirstCase {
 					new AbstractAlgorithm.HDDAlgorithmConfig(table));
 			algoRunner.runTPC_H_Supplier();			
 			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
+			partition.tableAttributes = table.attributes;
 			break;
 		case "PARTSUPP":
 			table = BenchmarkTables.tpchPartSupp(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
@@ -142,6 +143,7 @@ public class EvaluationResultFirstCase {
 					new AbstractAlgorithm.HDDAlgorithmConfig(table));
 			algoRunner.runTPC_H_PartSupp();			
 			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
+			partition.tableAttributes = table.attributes;
 			break;
 		case "ORDERS":
 			table = BenchmarkTables.tpchOrders(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
@@ -151,6 +153,7 @@ public class EvaluationResultFirstCase {
 					new AbstractAlgorithm.HDDAlgorithmConfig(table));
 			algoRunner.runTPC_H_Orders();			
 			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
+			partition.tableAttributes = table.attributes;
 			break;
 		case "NATION":
 			table = BenchmarkTables.tpchNation(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
@@ -160,6 +163,7 @@ public class EvaluationResultFirstCase {
 					new AbstractAlgorithm.HDDAlgorithmConfig(table));
 			algoRunner.runTPC_H_Nation();			
 			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
+			partition.tableAttributes = table.attributes;
 			break;
 		case "REGION":
 			table = BenchmarkTables.tpchRegion(new BenchmarkTables.BenchmarkConfig(null, 100, TableType.Default()));
@@ -168,7 +172,8 @@ public class EvaluationResultFirstCase {
 			algoRunner = new AlgorithmRunner(algos_sel, 10, Queries,
 					new AbstractAlgorithm.HDDAlgorithmConfig(table));
 			algoRunner.runTPC_H_Region();			
-			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());			
+			partition = AlgorithmResults.exportResults2(algoRunner.results, tableName.toLowerCase());
+			partition.tableAttributes = table.attributes;
 			break;
 		default:
 			break;

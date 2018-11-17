@@ -79,7 +79,8 @@ public class AlgorithmRunner {
     public AlgorithmResults results;
 
     /**
-     * Default constructor which creates a set-up for running all algorithms, scale factor 10 and HDD cost model.
+     * Default constructor which creates a set-up for running all algorithms, 
+     * scale factor 10 and HDD cost model.
      */
     public AlgorithmRunner() {
         this(null, 10.0, new AbstractAlgorithm.HDDAlgorithmConfig(BenchmarkTables.randomTable(1, 1)));
@@ -159,6 +160,19 @@ public class AlgorithmRunner {
     }
     /*End Debugging End*/
 
+    /*Begin Debugging Begin*/
+    public void runRandom() {
+
+        Table table = BenchmarkTables.tpchAll(benchmarkConf);
+        config.setTable(table);
+        runAlgorithms(config, lineitemCGrpThreshold);
+        //runAlgorithms(config, generalCGrpThreshold);
+
+        RUN_TROJAN = true;
+        RUN_OPTIMAL = true;
+        RUN_NAVATHE = true;
+
+    }
 
     /**
      * Method for running the experiment for TPC-H Customer.

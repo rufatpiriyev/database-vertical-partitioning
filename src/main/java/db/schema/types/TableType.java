@@ -1,5 +1,6 @@
 package db.schema.types;
 
+
 /**
  * 
  * Define different types of tables here

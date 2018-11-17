@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ovgu.dbse.piriyev.resources.CostModelResource;
 import com.ovgu.dbse.piriyev.resources.EvaluationResultFirstCase;
+import com.ovgu.dbse.piriyev.resources.EvaluationResultFirstCase2;
 import com.ovgu.dbse.piriyev.resources.ExistingQueries;
 import com.ovgu.dbse.piriyev.resources.PartitionResource;
 import com.ovgu.dbse.piriyev.resources.TableResource;
@@ -78,7 +79,7 @@ public class App extends Application<PartitionConfiguration>
     	environment.jersey().register(new CostModelResource());
     	environment.jersey().register(new ExistingQueries());
     	environment.jersey().register(new EvaluationResultFirstCase());
-    	
+    	environment.jersey().register(new EvaluationResultFirstCase2());
     }
 
     public static void main( String[] args ) throws Exception {
