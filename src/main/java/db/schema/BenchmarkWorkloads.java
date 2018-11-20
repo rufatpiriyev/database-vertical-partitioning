@@ -293,6 +293,7 @@ public class BenchmarkWorkloads {
 			for(int j=0; j<refAttributes.length; j++)
 				refAttributes[j] = usageMDist.nextInt();
 			w.addProjectionQuery("Q"+i, 1, refAttributes);
+			i++;
 		}
 		
 		return w;
@@ -300,7 +301,7 @@ public class BenchmarkWorkloads {
 	
 	
 	public static Workload randomWorkload2(List<Attribute> attributes, String workloadMatrix, int rowNumber){
-		String sWorkloadMatrix = workloadMatrix.replace(" ","").replace("],", "],\n").
+		String sWorkloadMatrix = workloadMatrix.replace("0.0", "0").replace("1.0", "1").replace(" ","").replace("],", "],\n").
 												replace("[[", "[").
 												replace("]]", "]").replace("],", "]");
 		
@@ -322,6 +323,7 @@ public class BenchmarkWorkloads {
 			//System.out.println(a[0]);
 			int [] atrributesPositions = returnPositionsInArray(attributesExisted);
 			w.addProjectionQuery("R" + i, 1, atrributesPositions);
+			i++;
 		}		
 		return w;
 	}

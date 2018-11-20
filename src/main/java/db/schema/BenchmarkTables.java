@@ -532,28 +532,37 @@ public class BenchmarkTables {
 		List<Attribute> attributes = new ArrayList<Attribute>();
 		int i = 0;
 		for(String aAttribute: aTableAttributes) {
-			
+			Attribute attr = new Attribute(null, null);
 			switch (aAttribute) {
 			case "1":
-				attributes.add(new Attribute("attribute_"+i, AttributeType.Boolean()));
+				attr = new Attribute("attribute_"+i, AttributeType.Boolean());
+				attributes.add(attr);
 				break;
 			case "2":
-				attributes.add(new Attribute("attribute_"+i, AttributeType.SmallInt()));
+				attr = new Attribute("attribute_"+i, AttributeType.SmallInt());
+				attributes.add(attr);
 				break;
 			case "4":
-				attributes.add(new Attribute("attribute_"+i, AttributeType.Integer()));
+				attr = new Attribute("attribute_"+i, AttributeType.Integer());
+				attributes.add(attr);
 				break;
 			case "8":
-				attributes.add(new Attribute("attribute_"+i, AttributeType.BigInt()));
+				attr = new Attribute("attribute_"+i, AttributeType.BigInt());
+				attributes.add(attr);
 				break;	
 			case "44":
-				attributes.add(new Attribute("attribute_"+i, AttributeType.CharacterVarying(44)));
+				attr = new Attribute("attribute_"+i, AttributeType.CharacterVarying(44));
+				attributes.add(attr);
 				break;	
 			case "100":
-				attributes.add(new Attribute("attribute_"+i, AttributeType.CharacterVarying(100)));
+				attr = new Attribute("attribute_"+i, AttributeType.CharacterVarying(100));
+				attributes.add(attr);
 				break;	
 			default:
 				break;
+			}
+			if (i == 0) {
+				attr.primaryKey = true;
 			}
 			i++;
 		}
