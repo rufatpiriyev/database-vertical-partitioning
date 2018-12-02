@@ -304,7 +304,6 @@ public class BenchmarkWorkloads {
 		String sWorkloadMatrix = workloadMatrix.replace("0.0", "0").replace("1.0", "1").replace(" ","").replace("],", "],\n").
 												replace("[[", "[").
 												replace("]]", "]").replace("],", "]");
-		
 		Workload w = new Workload(attributes, rowNumber, "RANDOM");
 		
 		String [] matrix  = sWorkloadMatrix.split("\n");
@@ -312,15 +311,14 @@ public class BenchmarkWorkloads {
 		
 		for(String row: matrix) {
 			int [] a = Arrays.copyOfRange(
-					StringArrayToIntArray(row.replace("]", "").replace("[", "").split(",")), 0, 5);
+					StringArrayToIntArray(row.replace("]", "").replace("[", "").split(",")), 0, attributes.size());
 			//System.out.println(a[0]);
 		}
 		
 		int i = 0;
 		for(String row: matrix) {
 			int [] attributesExisted = Arrays.copyOfRange(
-					StringArrayToIntArray(row.replace("]", "").replace("[", "").split(",")), 0, 5);
-			//System.out.println(a[0]);
+					StringArrayToIntArray(row.replace("]", "").replace("[", "").split(",")), 0, attributes.size());
 			int [] atrributesPositions = returnPositionsInArray(attributesExisted);
 			w.addProjectionQuery("R" + i, 1, atrributesPositions);
 			i++;

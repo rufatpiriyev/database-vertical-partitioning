@@ -4,12 +4,12 @@ database:
   driverClass: org.postgresql.Driver
   user: phonebook_app
   url: 'jdbc:postgresql://localhost/phonebook'
-swaggerBasePath: http://localhost:8085
+swaggerBasePath: http://localhost:8084
 server:
   applicationConnectors:
     - type: http
-      port: 8070
-      bindHost: 127.0.0.2 # only bind to loopback
+      port: 8080
+      bindHost: 127.0.0.1 # only bind to loopback
       inheritChannel: false
       headerCacheSize: 512 bytes
       outputBufferSize: 32KiB
@@ -30,4 +30,5 @@ server:
       useForwardedHeaders: true
   adminConnectors:
     - type: http
-      port: 8071
+      port: 8081
+      

@@ -70,9 +70,9 @@ public class AlgorithmRunner {
     /* JVM and testing specific parameters. */
 
     /** Iterations performed initially just to allow for the JVM to optimize the code.  */
-    protected static final int JVM_HEAT_UP_ITERATIONS = 5;
+    protected static final int JVM_HEAT_UP_ITERATIONS = 0;
     /** Number of times a single experiment is repeated. */
-    protected static final int REPETITIONS = 5;
+    protected static final int REPETITIONS = 1;
     /** The limit on the runtime of the algorithms for which we perform only one run.  */
     public static final double NO_REPEAT_TIME_LIMIT = 30;
 
@@ -558,7 +558,7 @@ public class AlgorithmRunner {
       algoRunner.runTPC_H_LineItem(true);
       String output = AlgorithmResults.exportResults(algoRunner.results);
 
-      System.out.println(output);
+  //    System.out.println(output);
   	
 //  	Map<Integer,String> actionMap = AbstractAlgorithm.getActionMap();
 //  	List<String> actions = new ArrayList<>();

@@ -3,11 +3,19 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org</groupId>
   <artifactId>database-vertical-partitioning</artifactId>
+  <packaging>war</packaging>
   <name>database-vertical-partitioning</name>
   <version>0.0.1-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <attachClasses>true</attachClasses>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>

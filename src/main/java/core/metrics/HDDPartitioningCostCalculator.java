@@ -66,6 +66,8 @@ public class HDDPartitioningCostCalculator extends PartitioningCostCalculator {
         for (int i=0; i<queries.length; i++) {
             totalCost += costs[i][HDDCostModel.SEEK] + costs[i][HDDCostModel.SCAN];
         }
+        
+        //System.out.println("Total costs of partitions" + totalCost);
 
         return totalCost;
     }
@@ -81,14 +83,22 @@ public class HDDPartitioningCostCalculator extends PartitioningCostCalculator {
 
         /* The row sizes of the partitions. */
         int[] partitionRowSize = new int[partitions.length];
-
         for (int p = 0; p < partitions.length; p++) {
-
             for (int a : partitions[p]) {
                 partitionRowSize[p] += w.attributeSizes[a];
             }
         }
+        /*
+        for (int i=0; i < w.usageMatrix[0].length; i++){
+        	if (i<11 && i >=4){
+        		w.usageMatrix[0][i]=1;
+        	}
+        }*/
 
+        if (false){
+        	System.out.println("Looking for a candidate");
+        	System.out.println("partitions.length: "+partitions.length);
+        }
         for (int i = 0; i < queries.length; i++) {
             int q = queries[i];
 
@@ -109,16 +119,35 @@ public class HDDPartitioningCostCalculator extends PartitioningCostCalculator {
                     }
                 }
             }
-
+            int counter=0;
             for (int p = 0; p < partitions.length; p++) {
                 if (isReferenced[p]) {
-                    double[] costsForQuery = cm.getCostsForPartition(partitionRowSize[p], referencedPartitionsRowSize);
+                	if (false){
+                    	System.out.println("Counter"+counter);
+                    	counter++;
+                    	System.out.println(p+","+partitionRowSize[p]+","+referencedPartitionsRowSize);
+                	}
+                	double[] costsForQuery = cm.getCostsForPartition(partitionRowSize[p], referencedPartitionsRowSize);
                     costs[i][HDDCostModel.SEEK] += costsForQuery[CostModel.SEEK];
                     costs[i][HDDCostModel.SCAN] += costsForQuery[CostModel.SCAN];
                 }
-            }
-        }
 
+            }
+            if (false){
+            	System.out.println("Q"+i+":"+costs[i][HDDCostModel.SEEK]+","+costs[i][HDDCostModel.SCAN]);
+            }            
+        }
+        if (false){
+        	for (int j=0; j<queries.length; j++){
+        		System.out.println(j);
+        		for (int i=0; i < w.usageMatrix[j].length; i++){
+        			System.out.println(i+":"+w.usageMatrix[j][i]);
+        		}
+        	}
+        	//System.out.println(costs[0][HDDCostModel.SCAN]+costs[0][HDDCostModel.SEEK]);
+        	System.out.println("-");
+        	
+        }
         return costs;
     }
 

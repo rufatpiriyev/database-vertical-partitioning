@@ -72,7 +72,7 @@ public class AlgorithmResults {
         runTimes.get(tableName).put(algorithm.type, runTime);
         actionSequence.get(tableName).put(algorithm.type, algorithm.actionSequence);
         
-        System.out.println(algorithm.actionSequence);
+        //System.out.println(algorithm.actionSequence);
        
     }
 

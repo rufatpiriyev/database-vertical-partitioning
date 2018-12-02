@@ -1,11 +1,5 @@
 package com.ovgu.dbse.piriyev;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import static core.algo.vertical.AbstractAlgorithm.Algo.AUTOPART;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +11,7 @@ import experiments.AlgorithmRunner;
  * Unit test for simple App.
  */
 public class AppTest 
-    extends TestCase
+    
 {
     /**
      * Create the test case

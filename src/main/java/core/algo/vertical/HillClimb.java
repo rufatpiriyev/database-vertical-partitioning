@@ -69,7 +69,7 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 		List<String> actionSteps = new ArrayList<String>();
 		
 		do {
-			System.out.println("Iteration:" + iterCount);
+			//System.out.println("Iteration:" + iterCount);
 			R = cand;
 			List<String> lstCandidate1 = twoDArrayToList(cand);
 			minCost = candCost;
@@ -93,16 +93,21 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 			if(!candList.isEmpty()) {
 				cand = getLowerCostCand(candList);
 				List<String> lstCandidate2 = twoDArrayToList(cand);
-				System.out.println("Candidate lenght:" + cand.length);
+				//System.out.println("Candidate lenght:" + cand.length);
 				candCost = getCandCost(cand);
 				lstCandidate2.removeAll(lstCandidate1);
-				actionSteps.add(lstCandidate2.get(0));
+				
+				if (candCost < minCost){
+					//System.out.println("Action: "+lstCandidate2.get(0));
+					actionSteps.add(lstCandidate2.get(0));
+					//System.out.println("Action cost: "+candCost);
+				}
 				
 			}
 			
-			iterCount++;
+			//iterCount++;
 		} while (candCost < minCost);
-
+		//System.out.println("Best cost: "+candCost);
 		partitioning = PartitioningUtils.getPartitioning(R);
 		
 		List<Integer> actions =  AbstractAlgorithm.getActions(actionSteps);
@@ -117,6 +122,7 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 		int index = 0;
 		double lowestCost = Double.MAX_VALUE;
 		for (int[][] cand : candList) {
+			//System.out.println("Cand"+index);
 			double cost = getCandCost(cand);
 			if (lowestCost > cost) {
 				indexOfLowest = index;
@@ -140,7 +146,7 @@ public class HillClimb extends AbstractPartitioningAlgorithm {
 		double sum = 0;
 
         sum = costCalculator.getPartitionsCost(cand);
-
+        
         /*
 		for (int[] item : cand) {
 			sum += costCalculator.costForPartition(item);

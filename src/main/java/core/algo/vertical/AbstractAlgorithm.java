@@ -3,12 +3,15 @@ package core.algo.vertical;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import core.costmodels.CostModel;
 import core.costmodels.HDDCostModel;
@@ -341,55 +344,66 @@ public abstract class AbstractAlgorithm {
 	}
 	
 	public static List<Integer> getActions(List<String> actionSequence){
-		
-		List<Integer> actionMapSequence = new ArrayList<>();
-		Map<Integer, String> actionMap = getActionMap();
-		
-	    Deque<List<String>> stackOfPreviousAction = new ArrayDeque<>();
-	    
-	    for(String action: actionSequence) {
-	    
-	    	String actionRemoveSpace = action.replace(" ", "");
-	    	String clearAction = actionRemoveSpace.replace("[", "").replace("]", "");
-	    	List<String> actionElements = new ArrayList<>(Arrays.asList(clearAction.split(",")));
-	    	
-	    	if(actionElements.size() == 2) {
-	    		 for (Entry<Integer, String> entry : actionMap.entrySet()) {
-	    	            if (entry.getValue().equals(actionRemoveSpace)) {
-	    	            	actionMapSequence.add(entry.getKey());
-	    	            }
-	    	        }
-	    	}
-	    	else if (actionElements.size() > 2) {
-	    		List<String> actionElementsDifference = actionElements;
-	    		Iterator iterator = stackOfPreviousAction.iterator(); 
-	    		while (iterator.hasNext()) {
-	    			List<String> value = (List<String>) iterator.next();
-	    	        if (value.get(0).equals(actionElements.get(0))) {
-	    	        	actionElementsDifference.removeAll(value);
-	    	        	String valueForSearch = "[" + value.get(0) + "," + actionElementsDifference.get(0) + "]";
-	    	       	 	for (Entry<Integer, String> entry : actionMap.entrySet()) {
-		    	            if (entry.getValue().equals(valueForSearch)) {
-		    	            	actionMapSequence.add(entry.getKey());
-		    	            }
-		    	        }
-	    	       	 	break;
-	    	     	    	        	
-	    	        }
-	    			
-	    		}
-	    		
-	    	}
-	    	stackOfPreviousAction.push(actionElements);
-	  
-	    }
-		
-		
-		
-		
-		return actionMapSequence;
-		
-	}
+        List<String> sActionSequnce = actionSequence;
+        List<Integer> actionMapSequence = new ArrayList<>();
+        Map<Integer, String> actionMap = getActionMap();
+        Set<String> nonMatching = new HashSet<>();
+        Deque<List<String>> stackOfPreviousAction = new ArrayDeque<>();
+        
+        for(String action: sActionSequnce) {
+            String actionRemoveSpace = action.replace(" ", "");
+            String clearAction = actionRemoveSpace.replace("[", "").replace("]", "");
+            List<String> actionElements = new ArrayList<>(Arrays.asList(clearAction.split(",")));
+            
+            if(actionElements.size() == 2) {
+                 for (Entry<Integer, String> entry : actionMap.entrySet()) {
+                        if (entry.getValue().equals(actionRemoveSpace)) {
+                            actionMapSequence.add(entry.getKey());
+                        }
+                    }
+            }
+            else if (actionElements.size() > 2) {
+                //Collections.copy(actionElements,actionElementsDifference);
+                Iterator iterator = stackOfPreviousAction.iterator();
+                while (iterator.hasNext()) {
+                	List<String> value = (List<String>) iterator.next();//All the items from a previous action
+                	nonMatching.clear();
+                	for (String item2:value){//For all items in the previous action
+                		Boolean match= Boolean.FALSE;
+                		for (String item:actionElements){//For all items in the current action
+                			if(item2.equals(item)){
+                				match= Boolean.TRUE;
+                				break;
+                			}
+                		}
+                		if(!match){
+                			nonMatching.add(item2);
+                		}
+                	}
+                	if(nonMatching.isEmpty()){//We care about this...
+                		String a = value.get(0);
+                		for (String item:actionElements){
+                			if (!value.contains(item)){
+                				String b = item;
+                				String valueForSearch = Integer.parseInt(a)<Integer.parseInt(b)?"[" + a + "," + b + "]":"[" + b + "," + a + "]";
+                				for (Entry<Integer, String> entry : actionMap.entrySet()) {
+    	                            if (entry.getValue().equals(valueForSearch)) {
+    	                                actionMapSequence.add(entry.getKey());
+    	                                break;
+    	                            }
+    	                        }
+                				break;
+                			}
+                		}
+                		break;
+                	}
+                }//If there is no overlap, we don't care.
+            }
+            stackOfPreviousAction.push(actionElements);
+      
+        }
+        return actionMapSequence;
+    }
 	
 	
 }

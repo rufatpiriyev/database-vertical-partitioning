@@ -116,14 +116,13 @@ public class HDDCostModel extends CostModel {
         /* Time spent on seeking and scanning. */
         double seekCost = seekTime * Math.ceil(numberOfBlocks / blocksReadPerBuffer);
         double scanCost = numberOfBlocks * blockSize / readDiskBW;
-
+        //System.out.println("Cost per partition:" + (seekCost + scanCost));
         return seekCost + scanCost;
     }
 
     @Override
     public double[] getCostsForPartition(int partitionRowSize, int referencedPartitionsRowSize) {
-
-        /*
+    	/*
 		 * We assume that all referenced partitions share the same buffer. The following is
 		 * the memory size occupied by the current partition in the buffer.
 		 */
@@ -146,7 +145,7 @@ public class HDDCostModel extends CostModel {
         double[] costs = new double[2];
         costs[SEEK] = seekCost;
         costs[SCAN] = scanCost;
-
+        //System.out.println("Cost per partition:" + (seekCost + scanCost));
         return costs;
     }
 

@@ -558,6 +558,14 @@ public class BenchmarkTables {
 				attr = new Attribute("attribute_"+i, AttributeType.CharacterVarying(100));
 				attributes.add(attr);
 				break;	
+			case "10":
+				attr = new Attribute("attribute_"+i, AttributeType.Character(10));
+				attributes.add(attr);
+				break;	
+			case "25":
+				attr = new Attribute("attribute_"+i, AttributeType.CharacterVarying(25));
+				attributes.add(attr);
+				break;	
 			default:
 				break;
 			}
